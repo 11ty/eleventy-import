@@ -1,9 +1,32 @@
 import test from 'node:test';
 import assert from "node:assert/strict";
-import { Importer } from '../src/Importer.js';
-import { createRequire } from 'node:module';
+import fs from "node:fs";
+import { createRequire } from "node:module";
+
+import { Importer } from "../src/Importer.js";
 
 const require = createRequire(import.meta.url);
+
+test("YouTube user", async (t) => {
+
+	let importer = new Importer();
+
+	importer.setVerbose(false);
+	importer.setDryRun(true);
+
+	importer.addSource("youtubeUser", "UCskGTioqrMBcw8pd14_334A");
+
+	let stubContent = fs.readFileSync("./test/sources/youtube-user.xml");
+	importer.addDataOverride("wordpress", "https://www.youtube.com/feeds/videos.xml?channel_id=UCskGTioqrMBcw8pd14_334A", stubContent);
+
+	let entries = await importer.getEntries();
+	assert.ok(entries.length, 15);
+
+	let [post] = entries;
+	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "date", "dateUpdated", "title", "type", "url", "uuid"]);
+	assert.equal(post.content.length, 812);
+	assert.equal(post.authors[0].name, "Eleventy");
+});
 
 test("WordPress import", async (t) => {
 

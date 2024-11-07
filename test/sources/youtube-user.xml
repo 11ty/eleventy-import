@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
+ <link rel="self" href="http://www.youtube.com/feeds/videos.xml?channel_id=UCskGTioqrMBcw8pd14_334A"/>
+ <id>yt:channel:skGTioqrMBcw8pd14_334A</id>
+ <yt:channelId>skGTioqrMBcw8pd14_334A</yt:channelId>
+ <title>Eleventy</title>
+ <link rel="alternate" href="https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A"/>
+ <author>
+  <name>Eleventy</name>
+  <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+ </author>
+ <published>2022-02-14T17:18:45+00:00</published>
+ <entry>
+  <id>yt:video:kNI_LcbvtNk</id>
+  <yt:videoId>kNI_LcbvtNk</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Managing content management (with no vendor lock-in) — David Large, Liam Bigelow (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=kNI_LcbvtNk"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:27:22+00:00</published>
+  <updated>2024-09-24T01:49:49+00:00</updated>
+  <media:group>
+   <media:title>Managing content management (with no vendor lock-in) — David Large, Liam Bigelow (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/kNI_LcbvtNk?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i4.ytimg.com/vi/kNI_LcbvtNk/hqdefault.jpg" width="480" height="360"/>
+   <media:description>CloudCannon is the Recommended CMS Partner of 11ty:
+
+https://cloudcannon.com/11tyconf/
+https://cloudcannon.com/blog/how-to-manage-hundreds-of-connected-websites-with-a-git-based-headless-cms/
+
+This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/managing-content-management/
+
+If Jamstack has taught us anything, it’s that websites work best when they’re generated from folders full of flat files. Even massively interconnected websites!
+
+We talk through a classically Jamstacky approach to content management for large organizations: mounting shared layout and component repositories, creating a central content lake to aggregate content like news articles, and automating site builds and deployments when your content or dependencies change.</media:description>
+   <media:community>
+    <media:starRating count="13" average="5.00" min="1" max="5"/>
+    <media:statistics views="598"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:-Pl0ibl47Rc</id>
+  <yt:videoId>-Pl0ibl47Rc</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>11ty and Large-Project Tooling — Paul Everitt (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=-Pl0ibl47Rc"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:27:18+00:00</published>
+  <updated>2024-08-19T19:05:07+00:00</updated>
+  <media:group>
+   <media:title>11ty and Large-Project Tooling — Paul Everitt (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/-Pl0ibl47Rc?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/-Pl0ibl47Rc/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/11ty-and-large-project-tooling/
+
+JetBrains has a knowledge base with lots of content, customizing, authors, developers… so we built it in Gatsby. Then switched to 11ty. But we wanted to keep some of the large-project tooling, so we added it. In this talk, we'll cover component driven development through TypeScript and TSX, unit testing with Vitest, in-editor validation of Markdown frontmatter for authors, content queries, and more.</media:description>
+   <media:community>
+    <media:starRating count="10" average="5.00" min="1" max="5"/>
+    <media:statistics views="400"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:P-I5D6BlejM</id>
+  <yt:videoId>P-I5D6BlejM</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Digital Frontiers, IndieWeb Cowboys, and A Place Online To Call… — Henry Desroches (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=P-I5D6BlejM"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:27:14+00:00</published>
+  <updated>2024-09-23T21:12:23+00:00</updated>
+  <media:group>
+   <media:title>Digital Frontiers, IndieWeb Cowboys, and A Place Online To Call… — Henry Desroches (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/P-I5D6BlejM?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/P-I5D6BlejM/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/digital-frontiers-indieweb-cowboys-and-a-place-online-to-call-your-own/
+
+The IndieWeb is a community of developers and designers and web-surfing wraiths connected by a belief in personal websites/domains as identity, digital self-publishing, and perhaps most chiefly owning one's content. In this talk, Henry will explore the key principles of the IndieWeb, and specifically focus on the concept of POSSE (or &quot;Publish (on your) Own Site, Syndicate Elsewhere&quot;), its benefits, and how it empowers folks to reclaim ownership of their online content or data. They will also discuss concrete and actionable strategies for implementing POSSE in one's own online presence (PERHAPS USING ELEVENTY?!?!?) and the potential impact it can have on the wider web</media:description>
+   <media:community>
+    <media:starRating count="17" average="5.00" min="1" max="5"/>
+    <media:statistics views="270"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:1vrPtBCLoro</id>
+  <yt:videoId>1vrPtBCLoro</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>You're Probably Doing Web Performance Wrong —  Sia Karamalegos (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=1vrPtBCLoro"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:27:10+00:00</published>
+  <updated>2024-09-24T02:43:20+00:00</updated>
+  <media:group>
+   <media:title>You're Probably Doing Web Performance Wrong —  Sia Karamalegos (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/1vrPtBCLoro?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/1vrPtBCLoro/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/you-re-probably-doing-web-performance-wrong/
+
+Lighthouse 100 is a common goal for developers seeking to make their sites fast, but does this really center user experience? In this talk, Sia will cover how to get a broader perspective on how real users are experiencing your website performance and better strategies for improving it.</media:description>
+   <media:community>
+    <media:starRating count="26" average="5.00" min="1" max="5"/>
+    <media:statistics views="586"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:VNIy2MaXFNM</id>
+  <yt:videoId>VNIy2MaXFNM</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Building a Town That Doesn't Exist — Dan Sinker (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=VNIy2MaXFNM"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:27:06+00:00</published>
+  <updated>2024-08-06T15:00:32+00:00</updated>
+  <media:group>
+   <media:title>Building a Town That Doesn't Exist — Dan Sinker (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/VNIy2MaXFNM?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/VNIy2MaXFNM/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/building-a-town-that-doesnt-exist/
+
+The town of Question Mark, Ohio has a city hall, a newspaper, a library, a chicken joint, an ice cream store, a dump, a haunted factory, two cults, a sordid past, and a mysterious glowing void in the woods.
+
+None of it is real, of course, but all of it exists on the web, thanks to Eleventy, Tailwind CSS, and Alpine.js, the crucial building blocks for creating a year-long immersive novel told not in a book but across the entire internet. This talk looks under the hood at how one person built 40 websites to tell the story of Question Mark, Ohio, a town that disappears into time.</media:description>
+   <media:community>
+    <media:starRating count="7" average="5.00" min="1" max="5"/>
+    <media:statistics views="177"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:8Z8H2NEbLtE</id>
+  <yt:videoId>8Z8H2NEbLtE</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Don't Fear the Cascade — Mayank (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=8Z8H2NEbLtE"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:27:02+00:00</published>
+  <updated>2024-08-24T14:18:56+00:00</updated>
+  <media:group>
+   <media:title>Don't Fear the Cascade — Mayank (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/8Z8H2NEbLtE?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/8Z8H2NEbLtE/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/dont-fear-the-cascade/
+
+In this talk, Mayank will teach the audience how to make sense of the cascade, clear up some common misconceptions (e.g. shadow DOM vs host context styles), and ultimately offer practical advice on how to make best use of the cascade.
+
+They will show off some newer game-changing CSS features (like :where, cascade layers, and @scope) that enable us to write styles with confidence and intention. They may also sprinkle in some tips on how these new features interact with current workflows, including frameworks, build tools, browser devtools, and IDEs.</media:description>
+   <media:community>
+    <media:starRating count="23" average="5.00" min="1" max="5"/>
+    <media:statistics views="459"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:kwHVpcwsJOE</id>
+  <yt:videoId>kwHVpcwsJOE</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>11ty for “Non-Developers” — Adrianna Tan (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=kwHVpcwsJOE"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:26:58+00:00</published>
+  <updated>2024-08-06T20:21:33+00:00</updated>
+  <media:group>
+   <media:title>11ty for “Non-Developers” — Adrianna Tan (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/kwHVpcwsJOE?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i4.ytimg.com/vi/kwHVpcwsJOE/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/11ty-sites-for-people-who-dont-think-they-are-web-developers/
+
+For a long time, we've thought of web development in two separate streams. WYSWYG builders for non-techical people, code for the rest. What if 'non-technical' isn't real, ‘web dev’ doesn't have to be just something you do for money, and building sites on the open web can be a fun hobby, especially with 11ty?
+
+In this talk, Adrianna will share how 11ty helped them finally break down the ’I’m not a web developer’ thoughts so they could build cool sites. Just like everyone can draw without being an artist, everyone can cook without being a chef.
+
+Adrianna will also share a framework they've developed for talking about and teaching 11ty to people who think they are not web developers, but who really have things to share on the web.</media:description>
+   <media:community>
+    <media:starRating count="10" average="5.00" min="1" max="5"/>
+    <media:statistics views="357"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:uIuf5LlA6KQ</id>
+  <yt:videoId>uIuf5LlA6KQ</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Come to the light side: HTML Web Components — Chris Ferdinandi (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=uIuf5LlA6KQ"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:26:54+00:00</published>
+  <updated>2024-09-25T04:58:00+00:00</updated>
+  <media:group>
+   <media:title>Come to the light side: HTML Web Components — Chris Ferdinandi (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/uIuf5LlA6KQ?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/uIuf5LlA6KQ/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/come-to-the-light-side-html-web-components/
+
+While Web Components have been around for years, they're seeing a bit of a renaissance thanks to an emerging approach for authoring them: ditch the shadow DOM and progressively enhance existing HTML.
+
+In this talk, we'll look at what Web Components, how the &quot;HTML Web Component&quot; approach works, why it's awesome, and some tips, tricks, and gotchas when working with them.</media:description>
+   <media:community>
+    <media:starRating count="36" average="5.00" min="1" max="5"/>
+    <media:statistics views="727"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:Pkg-Brizep8</id>
+  <yt:videoId>Pkg-Brizep8</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Chinese Type Systems — ivan zhao (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=Pkg-Brizep8"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:26:50+00:00</published>
+  <updated>2024-08-29T07:32:37+00:00</updated>
+  <media:group>
+   <media:title>Chinese Type Systems — ivan zhao (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/Pkg-Brizep8?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/Pkg-Brizep8/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/chinese-type-systems/
+
+In this talk, ivan will educate listeners about understanding Chinese type systems, pairing Chinese fonts, and why its so hard to put your Chinese font in the @font-face in CSS. Typesetting on the web with Chinese fonts is extremely difficult and ivan will give examples of pages that do this beautifully, and recommendations on how to find these.
+
+They will also talk about the history of the Chinese language, the differences in character based vs glyph based, and the difficulties of pairing the two types together. They’ll dive into the various classifications of systems that they use and talk about how to notice and pair Chinese fonts together, as well as actionably implementing them in CSS and the bundle size of the file.</media:description>
+   <media:community>
+    <media:starRating count="4" average="5.00" min="1" max="5"/>
+    <media:statistics views="164"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:iZ4XjLeaKH4</id>
+  <yt:videoId>iZ4XjLeaKH4</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Light mode versus Dark mode, why not both? — Sara Joy (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=iZ4XjLeaKH4"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:26:47+00:00</published>
+  <updated>2024-09-24T14:17:03+00:00</updated>
+  <media:group>
+   <media:title>Light mode versus Dark mode, why not both? — Sara Joy (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/iZ4XjLeaKH4?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/iZ4XjLeaKH4/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/light-mode-versus-dark-mode/
+
+It doesn’t have to be this way. Some people have very real physical reasons to need one mode over another. The rest of us are also allowed to have our favourites, or might prefer light mode in some situations and dark in others.
+
+What if Sara said it was super easy to code up both dark and light modes at the same time? Despite Sara’s evangelising efforts, not enough people know of the CSS property color-scheme and how powerful it is.</media:description>
+   <media:community>
+    <media:starRating count="15" average="5.00" min="1" max="5"/>
+    <media:statistics views="310"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:tXNsWsEE7S0</id>
+  <yt:videoId>tXNsWsEE7S0</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>The Future of 11ty — Zach Leatherman (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=tXNsWsEE7S0"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:26:42+00:00</published>
+  <updated>2024-09-24T15:54:12+00:00</updated>
+  <media:group>
+   <media:title>The Future of 11ty — Zach Leatherman (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/tXNsWsEE7S0?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/tXNsWsEE7S0/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024):  https://conf.11ty.dev/2024/the-future-of-11ty/
+
+Learn more about CloudCannon and 11ty: https://cloudcannon.com/11tyconf/
+
+A talk about the current state of the 11ty project, new tricks and releases, and where we’re going next.</media:description>
+   <media:community>
+    <media:starRating count="71" average="5.00" min="1" max="5"/>
+    <media:statistics views="1618"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:uaN9kY8lKPU</id>
+  <yt:videoId>uaN9kY8lKPU</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Hints and Suggestions — Miriam Suzanne (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=uaN9kY8lKPU"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-17T18:04:53+00:00</published>
+  <updated>2024-08-29T14:28:06+00:00</updated>
+  <media:group>
+   <media:title>Hints and Suggestions — Miriam Suzanne (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/uaN9kY8lKPU?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/uaN9kY8lKPU/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/hints-and-suggestions-first-do-no-harm/
+
+The web is fundamentally different from other platforms, built around a radically political vision for resilience and user-control. CSS takes that to another level, attempting the almost absurd task of collaborative styling across devices and interfaces and languages. This is a quick dive into the origins of the web, and CSS in particular—the design constraints, and the range of strange proposals, and how we got where we are. By the end, we see the CSS is Awesome meme in a whole new light.</media:description>
+   <media:community>
+    <media:starRating count="28" average="5.00" min="1" max="5"/>
+    <media:statistics views="540"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:b-aQ7_yD44s</id>
+  <yt:videoId>b-aQ7_yD44s</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Break Slideshow: Personal Sites Montage (11ty Conf 2024)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=b-aQ7_yD44s"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-15T16:01:31+00:00</published>
+  <updated>2024-08-26T19:42:34+00:00</updated>
+  <media:group>
+   <media:title>Break Slideshow: Personal Sites Montage (11ty Conf 2024)</media:title>
+   <media:content url="https://www.youtube.com/v/b-aQ7_yD44s?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/b-aQ7_yD44s/hqdefault.jpg" width="480" height="360"/>
+   <media:description>This slideshow appeared during the 11ty Conference (2024) during the breaks to highlight community personal sites. The sites were gathered from the 11ty Leaderboard https://www.11ty.dev/speedlify/ and our Authors pages https://www.11ty.dev/authors/</media:description>
+   <media:community>
+    <media:starRating count="15" average="5.00" min="1" max="5"/>
+    <media:statistics views="234"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:iLxJ6PtuF9M</id>
+  <yt:videoId>iLxJ6PtuF9M</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>The 11ty International Symposium on Making Web Sites Real Good (Live stream)</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=iLxJ6PtuF9M"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2024-05-09T21:10:46+00:00</published>
+  <updated>2024-08-24T19:51:44+00:00</updated>
+  <media:group>
+   <media:title>The 11ty International Symposium on Making Web Sites Real Good (Live stream)</media:title>
+   <media:content url="https://www.youtube.com/v/iLxJ6PtuF9M?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/iLxJ6PtuF9M/hqdefault.jpg" width="480" height="360"/>
+   <media:description>https://conf.11ty.dev/
+
+00:00:00 Countdown
+00:20:05 Kickoff!
+00:35:56 Future of 11ty by Zach Leatherman
+01:09:50 Hints &amp; Suggestions (First, Do No Harm) by Miriam Suzanne
+01:34:00 11ty and Large-Project Tooling by Paul Everitt
+01:55:41 Break
+02:22:22 Digital Frontiers, IndieWeb Cowboys, and A Place Online To Call Your Own by Henry Desroches
+02:39:40 You're Probably Doing Web Performance Wrong by Sia Karamalegos
+03:00:30 Building a Town That Doesn't Exist by Dan Sinker
+03:14:43 Break
+03:35:00 11ty Sites for People Who Don't Think they are Web Developers by Adrianna Tan
+03:50:50 Don't Fear the Cascade by Mayank
+04:16:50 Managing content management (with no vendor lock-in): Git CMS and static API generation, together at last! by Liam Bigelow and David Large
+04:31:00 Break
+04:50:35 Come to the light side: HTML Web Components by Chris Ferdinandi
+05:15:55 Chinese Type Systems by Ivan Zhao
+05:31:55 Light mode versus Dark mode by Sara Joy
+05:54:59 Recap</media:description>
+   <media:community>
+    <media:starRating count="225" average="5.00" min="1" max="5"/>
+    <media:statistics views="5774"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:nypsmn70ipI</id>
+  <yt:videoId>nypsmn70ipI</yt:videoId>
+  <yt:channelId>UCskGTioqrMBcw8pd14_334A</yt:channelId>
+  <title>Big Announcement: Eleventy and @CloudCannon!</title>
+  <link rel="alternate" href="https://www.youtube.com/watch?v=nypsmn70ipI"/>
+  <author>
+   <name>Eleventy</name>
+   <uri>https://www.youtube.com/channel/UCskGTioqrMBcw8pd14_334A</uri>
+  </author>
+  <published>2023-07-25T15:00:46+00:00</published>
+  <updated>2024-08-24T07:51:29+00:00</updated>
+  <media:group>
+   <media:title>Big Announcement: Eleventy and @CloudCannon!</media:title>
+   <media:content url="https://www.youtube.com/v/nypsmn70ipI?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/nypsmn70ipI/hqdefault.jpg" width="480" height="360"/>
+   <media:description>https://cloudcannon.com/blog/cloudcannon-the-official-cms-partner-of-eleventy/
+
+and at https://www.11ty.dev/blog/cloudcannon/</media:description>
+   <media:community>
+    <media:starRating count="155" average="5.00" min="1" max="5"/>
+    <media:statistics views="2556"/>
+   </media:community>
+  </media:group>
+ </entry>
+</feed>
