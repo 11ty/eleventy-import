@@ -1,0 +1,130 @@
+{
+	"id": 155431370,
+	"name": "Matt Johnson",
+	"url": "",
+	"description": "",
+	"link": "https://blog.fontawesome.com/author/iamthedayofcurrenttaste/",
+	"slug": "iamthedayofcurrenttaste",
+	"avatar_urls": {
+		"24": "https://secure.gravatar.com/avatar/b548253c6adbbd36ce84487da009e1aa?s=24&r=g",
+		"48": "https://secure.gravatar.com/avatar/b548253c6adbbd36ce84487da009e1aa?s=48&r=g",
+		"96": "https://secure.gravatar.com/avatar/b548253c6adbbd36ce84487da009e1aa?s=96&r=g"
+	},
+	"meta": [],
+	"yoast_head": "<!-- This site is optimized with the Yoast SEO plugin v23.8 - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Matt Johnson, Author at Blog Awesome</title>\n<!-- Admin only notice: this page does not show a meta description because it does not have one, either write it for this page specifically or go into the [Yoast SEO - Settings] menu and set up a template. -->\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://blog.fontawesome.com/author/iamthedayofcurrenttaste/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"profile\" />\n<meta property=\"og:title\" content=\"Matt Johnson, Author at Blog Awesome\" />\n<meta property=\"og:url\" content=\"https://blog.fontawesome.com/author/iamthedayofcurrenttaste/\" />\n<meta property=\"og:site_name\" content=\"Blog Awesome\" />\n<meta property=\"og:image\" content=\"https://secure.gravatar.com/avatar/b548253c6adbbd36ce84487da009e1aa?s=500&r=g\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<meta name=\"twitter:site\" content=\"@fontawesome\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"ProfilePage\",\"@id\":\"https://blog.fontawesome.com/author/iamthedayofcurrenttaste/\",\"url\":\"https://blog.fontawesome.com/author/iamthedayofcurrenttaste/\",\"name\":\"Matt Johnson, Author at Blog Awesome\",\"isPartOf\":{\"@id\":\"https://blog.fontawesome.com/#website\"},\"breadcrumb\":{\"@id\":\"https://blog.fontawesome.com/author/iamthedayofcurrenttaste/#breadcrumb\"},\"inLanguage\":\"en-US\",\"potentialAction\":[{\"@type\":\"ReadAction\",\"target\":[\"https://blog.fontawesome.com/author/iamthedayofcurrenttaste/\"]}]},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://blog.fontawesome.com/author/iamthedayofcurrenttaste/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://blog.fontawesome.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Archives for Matt Johnson\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://blog.fontawesome.com/#website\",\"url\":\"https://blog.fontawesome.com/\",\"name\":\"Blog Awesome\",\"description\":\"News and information from Font Awesome – the internet&#039;s favorite icon set; mixed with musings and nerdery from the team behind it.\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://blog.fontawesome.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Person\",\"@id\":\"https://blog.fontawesome.com/#/schema/person/7bc6a686f3fdf796f6e069c674ea7dbe\",\"name\":\"Matt Johnson\",\"image\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://blog.fontawesome.com/#/schema/person/image/\",\"url\":\"https://secure.gravatar.com/avatar/b548253c6adbbd36ce84487da009e1aa?s=96&r=g\",\"contentUrl\":\"https://secure.gravatar.com/avatar/b548253c6adbbd36ce84487da009e1aa?s=96&r=g\",\"caption\":\"Matt Johnson\"},\"mainEntityOfPage\":{\"@id\":\"https://blog.fontawesome.com/author/iamthedayofcurrenttaste/\"}}]}</script>\n<!-- / Yoast SEO plugin. -->",
+	"yoast_head_json": {
+		"title": "Matt Johnson, Author at Blog Awesome",
+		"robots": {
+			"index": "index",
+			"follow": "follow",
+			"max-snippet": "max-snippet:-1",
+			"max-image-preview": "max-image-preview:large",
+			"max-video-preview": "max-video-preview:-1"
+		},
+		"canonical": "https://blog.fontawesome.com/author/iamthedayofcurrenttaste/",
+		"og_locale": "en_US",
+		"og_type": "profile",
+		"og_title": "Matt Johnson, Author at Blog Awesome",
+		"og_url": "https://blog.fontawesome.com/author/iamthedayofcurrenttaste/",
+		"og_site_name": "Blog Awesome",
+		"og_image": [
+			{
+				"url": "https://secure.gravatar.com/avatar/b548253c6adbbd36ce84487da009e1aa?s=500&r=g"
+			}
+		],
+		"twitter_card": "summary_large_image",
+		"twitter_site": "@fontawesome",
+		"schema": {
+			"@context": "https://schema.org",
+			"@graph": [
+				{
+					"@type": "ProfilePage",
+					"@id": "https://blog.fontawesome.com/author/iamthedayofcurrenttaste/",
+					"url": "https://blog.fontawesome.com/author/iamthedayofcurrenttaste/",
+					"name": "Matt Johnson, Author at Blog Awesome",
+					"isPartOf": { "@id": "https://blog.fontawesome.com/#website" },
+					"breadcrumb": {
+						"@id": "https://blog.fontawesome.com/author/iamthedayofcurrenttaste/#breadcrumb"
+					},
+					"inLanguage": "en-US",
+					"potentialAction": [
+						{
+							"@type": "ReadAction",
+							"target": [
+								"https://blog.fontawesome.com/author/iamthedayofcurrenttaste/"
+							]
+						}
+					]
+				},
+				{
+					"@type": "BreadcrumbList",
+					"@id": "https://blog.fontawesome.com/author/iamthedayofcurrenttaste/#breadcrumb",
+					"itemListElement": [
+						{
+							"@type": "ListItem",
+							"position": 1,
+							"name": "Home",
+							"item": "https://blog.fontawesome.com/"
+						},
+						{
+							"@type": "ListItem",
+							"position": 2,
+							"name": "Archives for Matt Johnson"
+						}
+					]
+				},
+				{
+					"@type": "WebSite",
+					"@id": "https://blog.fontawesome.com/#website",
+					"url": "https://blog.fontawesome.com/",
+					"name": "Blog Awesome",
+					"description": "News and information from Font Awesome – the internet&#039;s favorite icon set; mixed with musings and nerdery from the team behind it.",
+					"potentialAction": [
+						{
+							"@type": "SearchAction",
+							"target": {
+								"@type": "EntryPoint",
+								"urlTemplate": "https://blog.fontawesome.com/?s={search_term_string}"
+							},
+							"query-input": {
+								"@type": "PropertyValueSpecification",
+								"valueRequired": true,
+								"valueName": "search_term_string"
+							}
+						}
+					],
+					"inLanguage": "en-US"
+				},
+				{
+					"@type": "Person",
+					"@id": "https://blog.fontawesome.com/#/schema/person/7bc6a686f3fdf796f6e069c674ea7dbe",
+					"name": "Matt Johnson",
+					"image": {
+						"@type": "ImageObject",
+						"inLanguage": "en-US",
+						"@id": "https://blog.fontawesome.com/#/schema/person/image/",
+						"url": "https://secure.gravatar.com/avatar/b548253c6adbbd36ce84487da009e1aa?s=96&r=g",
+						"contentUrl": "https://secure.gravatar.com/avatar/b548253c6adbbd36ce84487da009e1aa?s=96&r=g",
+						"caption": "Matt Johnson"
+					},
+					"mainEntityOfPage": {
+						"@id": "https://blog.fontawesome.com/author/iamthedayofcurrenttaste/"
+					}
+				}
+			]
+		}
+	},
+	"amp_review_panel_dismissed_for_template_mode": "",
+	"amp_dev_tools_enabled": false,
+	"_links": {
+		"self": [
+			{
+				"href": "https://blog.fontawesome.com/wp-json/wp/v2/users/155431370",
+				"targetHints": { "allow": ["GET", "POST", "PUT", "PATCH", "DELETE"] }
+			}
+		],
+		"collection": [
+			{ "href": "https://blog.fontawesome.com/wp-json/wp/v2/users" }
+		]
+	}
+}

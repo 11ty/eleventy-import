@@ -1,7 +1,7 @@
 {
 	"name": "@11ty/import",
 	"version": "1.0.0",
-	"description": "Utility to import content from multiple services (and a CLI, too).",
+	"description": "Utility to import content from multiple services (and a CLI, too)",
 	"main": "src/Importer.js",
 	"type": "module",
 	"engines": {
@@ -38,8 +38,5 @@
 		"js-yaml": "^4.1.0",
 		"kleur": "^4.1.5",
 		"turndown": "^7.2.0"
-	},
-	"devDependencies": {
-		"rimraf": "^6.0.1"
 	}
 }

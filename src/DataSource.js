@@ -6,6 +6,7 @@ class DataSource {
 	static UUID_PREFIX = "11tyaf";
 
 	#fetcher;
+	#fetchDataOverrides = {};
 	#outputFolder;
 
 	constructor() {
@@ -25,6 +26,11 @@ class DataSource {
 			throw new Error("Missing Fetcher instance.");
 		}
 		return this.#fetcher;
+	}
+
+	// For testing
+	setDataOverride(url, data) {
+		this.#fetchDataOverrides[url] = data;
 	}
 
 	setLabel(label) {
@@ -96,6 +102,15 @@ class DataSource {
 	}
 
 	async getData(url, type, showErrors = true) {
+		// For testing, all urls must be stubbed
+		if(Object.keys(this.#fetchDataOverrides).length > 0) {
+			if(this.#fetchDataOverrides[url]) {
+				return this.#fetchDataOverrides[url];
+			}
+
+			throw new Error("Testing error, missing data override url: " + url);
+		}
+
 		return this.fetcher.fetch(url, {
 			type,
 			fetchOptions: {
@@ -133,6 +148,7 @@ class DataSource {
 						entries.push(entry);
 						found++;
 					}
+
 					if(found === 0) {
 						break;
 					}

@@ -1,0 +1,121 @@
+{
+  "id": 1,
+  "count": 91,
+  "description": "",
+  "link": "https://blog.fontawesome.com/category/uncategorized/",
+  "name": "Uncategorized",
+  "slug": "uncategorized",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "\u003C!-- This site is optimized with the Yoast SEO plugin v23.8 - https://yoast.com/wordpress/plugins/seo/ --\u003E\n\u003Ctitle\u003EUncategorized Archives - Blog Awesome\u003C/title\u003E\n\u003Cmeta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" /\u003E\n\u003Clink rel=\"canonical\" href=\"https://blog.fontawesome.com/category/uncategorized/\" /\u003E\n\u003Cmeta property=\"og:locale\" content=\"en_US\" /\u003E\n\u003Cmeta property=\"og:type\" content=\"article\" /\u003E\n\u003Cmeta property=\"og:title\" content=\"Uncategorized Archives - Blog Awesome\" /\u003E\n\u003Cmeta property=\"og:url\" content=\"https://blog.fontawesome.com/category/uncategorized/\" /\u003E\n\u003Cmeta property=\"og:site_name\" content=\"Blog Awesome\" /\u003E\n\u003Cmeta name=\"twitter:card\" content=\"summary_large_image\" /\u003E\n\u003Cmeta name=\"twitter:site\" content=\"@fontawesome\" /\u003E\n\u003Cscript type=\"application/ld+json\" class=\"yoast-schema-graph\"\u003E{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://blog.fontawesome.com/category/uncategorized/\",\"url\":\"https://blog.fontawesome.com/category/uncategorized/\",\"name\":\"Uncategorized Archives - Blog Awesome\",\"isPartOf\":{\"@id\":\"https://blog.fontawesome.com/#website\"},\"breadcrumb\":{\"@id\":\"https://blog.fontawesome.com/category/uncategorized/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://blog.fontawesome.com/category/uncategorized/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://blog.fontawesome.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Uncategorized\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://blog.fontawesome.com/#website\",\"url\":\"https://blog.fontawesome.com/\",\"name\":\"Blog Awesome\",\"description\":\"News and information from Font Awesome – the internet&#039;s favorite icon set; mixed with musings and nerdery from the team behind it.\",\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://blog.fontawesome.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"}]}\u003C/script\u003E\n\u003C!-- / Yoast SEO plugin. --\u003E",
+  "yoast_head_json": {
+    "title": "Uncategorized Archives - Blog Awesome",
+    "robots": {
+      "index": "index",
+      "follow": "follow",
+      "max-snippet": "max-snippet:-1",
+      "max-image-preview": "max-image-preview:large",
+      "max-video-preview": "max-video-preview:-1"
+    },
+    "canonical": "https://blog.fontawesome.com/category/uncategorized/",
+    "og_locale": "en_US",
+    "og_type": "article",
+    "og_title": "Uncategorized Archives - Blog Awesome",
+    "og_url": "https://blog.fontawesome.com/category/uncategorized/",
+    "og_site_name": "Blog Awesome",
+    "twitter_card": "summary_large_image",
+    "twitter_site": "@fontawesome",
+    "schema": {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "@id": "https://blog.fontawesome.com/category/uncategorized/",
+          "url": "https://blog.fontawesome.com/category/uncategorized/",
+          "name": "Uncategorized Archives - Blog Awesome",
+          "isPartOf": {
+            "@id": "https://blog.fontawesome.com/#website"
+          },
+          "breadcrumb": {
+            "@id": "https://blog.fontawesome.com/category/uncategorized/#breadcrumb"
+          },
+          "inLanguage": "en-US"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://blog.fontawesome.com/category/uncategorized/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://blog.fontawesome.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Uncategorized"
+            }
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://blog.fontawesome.com/#website",
+          "url": "https://blog.fontawesome.com/",
+          "name": "Blog Awesome",
+          "description": "News and information from Font Awesome – the internet&#039;s favorite icon set; mixed with musings and nerdery from the team behind it.",
+          "potentialAction": [
+            {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://blog.fontawesome.com/?s={search_term_string}"
+              },
+              "query-input": {
+                "@type": "PropertyValueSpecification",
+                "valueRequired": true,
+                "valueName": "search_term_string"
+              }
+            }
+          ],
+          "inLanguage": "en-US"
+        }
+      ]
+    }
+  },
+  "_links": {
+    "self": [
+      {
+        "href": "https://blog.fontawesome.com/wp-json/wp/v2/categories/1",
+        "targetHints": {
+          "allow": [
+            "GET"
+          ]
+        }
+      }
+    ],
+    "collection": [
+      {
+        "href": "https://blog.fontawesome.com/wp-json/wp/v2/categories"
+      }
+    ],
+    "about": [
+      {
+        "href": "https://blog.fontawesome.com/wp-json/wp/v2/taxonomies/category"
+      }
+    ],
+    "wp:post_type": [
+      {
+        "href": "https://blog.fontawesome.com/wp-json/wp/v2/posts?categories=1"
+      }
+    ],
+    "curies": [
+      {
+        "name": "wp",
+        "href": "https://api.w.org/{rel}",
+        "templated": true
+      }
+    ]
+  }
+}

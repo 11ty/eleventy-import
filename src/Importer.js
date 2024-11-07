@@ -125,6 +125,16 @@ class Importer {
 		return this.sources;
 	}
 
+	getSourcesForType(type) {
+		return this.sources.filter(entry => entry.constructor.TYPE === type);
+	}
+
+	addDataOverride(type, url, data) {
+		for(let source of this.getSourcesForType(type)) {
+			source.setDataOverride(url, data);
+		}
+	}
+
 	async getEntries(options = {}) {
 		let entries = [];
 		for(let source of this.sources) {
