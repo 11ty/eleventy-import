@@ -5,6 +5,7 @@ import kleur from "kleur";
 
 import { Importer } from "./src/Importer.js";
 import { Logger } from "./src/Logger.js";
+import { createRequire } from "node:module";
 
 let { positionals, values } = parseArgs({
 	allowPositionals: true,
@@ -17,6 +18,10 @@ let { positionals, values } = parseArgs({
 		target: {
 			type: "string",
 		},
+		output: {
+			type: "string",
+			default: ".",
+		},
 		quiet: {
 			type: "boolean",
 			default: false,
@@ -25,11 +30,45 @@ let { positionals, values } = parseArgs({
 			type: "boolean",
 			default: false,
 		},
+		help: {
+			type: "boolean",
+			default: false,
+		},
+		version: {
+			type: "boolean",
+			default: false,
+		},
 	},
 });
 
 let [ type, target ] = positionals;
-let { quiet, dryrun } = values;
+let { quiet, dryrun, output, help, version } = values;
+
+if(version) {
+	const require = createRequire(import.meta.url);
+	let pkg = require("./package.json");
+	Logger.log(pkg.version);
+	process.exit();
+}
+
+if(help) {
+	Logger.log(`Usage:
+
+  npx @11ty/import --help
+  npx @11ty/import --version
+
+  # Import content
+  npx @11ty/import [type] [target]
+
+  # Quietly
+  npx @11ty/import [type] [target] --quiet
+
+  # Change the output folder
+  npx @11ty/import [type] [target] --output=dist
+`);
+
+	process.exit();
+}
 
 // Input checking
 if(!type || !target) {
@@ -46,7 +85,7 @@ importer.setVerbose(!quiet);
 // TODO wire these up to CLI
 importer.setCacheDuration("4h");
 importer.setDraftsFolder("drafts");
-importer.setOutputFolder("dist");
+importer.setOutputFolder(output);
 
 importer.setDryRun(dryrun);
 importer.addSource(type, target);
