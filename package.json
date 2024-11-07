@@ -1,0 +1,45 @@
+{
+	"name": "@11ty/import",
+	"version": "1.0.0",
+	"description": "Utility to import content from multiple services (and a CLI, too).",
+	"main": "src/Importer.js",
+	"type": "module",
+	"engines": {
+		"node": ">=18"
+	},
+	"bin": {
+		"@11ty/import": "cli.js"
+	},
+	"scripts": {
+		"test": "node --test",
+		"demo": "node ."
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"funding": {
+		"type": "opencollective",
+		"url": "https://opencollective.com/11ty"
+	},
+	"author": "Zach Leatherman <zachleatherman@gmail.com> (https://zachleat.com/)",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/11ty/import.git"
+	},
+	"bugs": "https://github.com/11ty/import/issues",
+	"homepage": "https://www.11ty.dev/",
+	"license": "MIT",
+	"dependencies": {
+		"@11ty/eleventy-fetch": "^5.0.0-beta.4",
+		"dotenv": "^16.4.5",
+		"fast-xml-parser": "^4.5.0",
+		"filesize": "^10.1.6",
+		"graceful-fs": "^4.2.11",
+		"js-yaml": "^4.1.0",
+		"kleur": "^4.1.5",
+		"turndown": "^7.2.0"
+	},
+	"devDependencies": {
+		"rimraf": "^6.0.1"
+	}
+}
