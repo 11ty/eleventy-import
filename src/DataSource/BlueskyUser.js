@@ -5,9 +5,23 @@ class BlueskyUser extends DataSource {
 	static TYPE = "bluesky";
 	static TYPE_FRIENDLY = "Bluesky";
 
+	#username;
+
 	constructor(username) {
 		super();
 		this.username = username;
+	}
+
+	set username(username) {
+		if(username.startsWith("@")) {
+			this.#username = username.slice(1);
+		} else {
+			this.#username = username;
+		}
+	}
+
+	get username() {
+		return this.#username;
 	}
 
 	getType() {
