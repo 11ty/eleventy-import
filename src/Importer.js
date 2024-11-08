@@ -24,6 +24,8 @@ class Importer {
 		this.sources = [];
 		this.isVerbose = true;
 		this.dryRun = false;
+		this.safeMode = true;
+		this.skipCount = 0;
 
 		this.markdownService = new MarkdownToHtml();
 		this.htmlTransformer = new HtmlTransformer();
@@ -33,6 +35,10 @@ class Importer {
 		this.htmlTransformer.setFetcher(this.fetcher);
 
 		this.fetcher.setDirectoryManager(this.directoryManager);
+	}
+
+	setSafeMode(safeMode) {
+		this.safeMode = Boolean(safeMode);
 	}
 
 	setDryRun(isDryRun) {
@@ -53,7 +59,10 @@ class Importer {
 	}
 
 	getCounts() {
-		return this.fetcher.getCounts();
+		return {
+			skipped: this.skipCount,
+			...this.fetcher.getCounts(),
+		}
 	}
 
 	setDraftsFolder(dir) {
@@ -230,7 +239,7 @@ class Importer {
 	}
 
 	// TODO options.pathPrefix
-	toFiles(entries = [], options = {}) {
+	toFiles(entries = []) {
 		let filepathConflicts = {};
 		let filesWrittenCount = 0;
 
@@ -263,6 +272,15 @@ ${entry.content}`
 
 			let pathname = this.getFilePath(entry);
 			if(pathname === false) {
+				continue;
+			}
+
+			if(this.safeMode && fs.existsSync(pathname)) {
+				if(this.isVerbose) {
+					Logger.skipping("post", pathname, entry.url);
+				}
+
+				this.skipCount++;
 				continue;
 			}
 

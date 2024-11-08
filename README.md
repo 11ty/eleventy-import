@@ -19,6 +19,9 @@ npx @11ty/import [type] [target] --quiet
 
 # Change the output folder
 npx @11ty/import [type] [target] --output=dist
+
+# Allow overwriting existing content files
+npx @11ty/import [type] [target] --overwrite
 ```
 
 ### Service Types

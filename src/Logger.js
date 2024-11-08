@@ -6,12 +6,32 @@ class Logger {
 		console.log(...messages);
 	}
 
-	static importing(type, local, remote, options = {}) {
+	static _logFsOperation(label, type, local, remote, options = {}) {
 		let { size, dryRun } = options;
-		let sizeStr = filesize(size, {
-			spacer: ""
-		});
-		this.log(kleur.gray(`Importing ${type}`), local, kleur.gray(`(${sizeStr}${dryRun ? ", dry run" : ""})`), kleur.gray("from"), remote);
+
+		let extras = [];
+		if(label === "Skipping") {
+			extras.push("overwrites disabled");
+		} else {
+			if(size) {
+				extras.push(filesize(size, {
+					spacer: ""
+				}));
+			}
+			if(dryRun) {
+				extras.push("dry run");
+			}
+		}
+		let extrasStr = extras.length ? `(${extras.join(", ")}) ` : "";
+		this.log(kleur.gray(`${label} ${type}`), local, kleur.gray(`${extrasStr}from`), remote);
+	}
+
+	static importing(type, local, remote, options = {}) {
+		this._logFsOperation("Importing", type, local, remote, options);
+	}
+
+	static skipping(type, local, remote, options = {}) {
+		this._logFsOperation("Skipping", type, local, remote, options);
 	}
 
 	// alias for log

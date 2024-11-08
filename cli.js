@@ -38,11 +38,15 @@ let { positionals, values } = parseArgs({
 			type: "boolean",
 			default: false,
 		},
+		overwrite: {
+			type: "boolean",
+			default: false,
+		}
 	},
 });
 
 let [ type, target ] = positionals;
-let { quiet, dryrun, output, help, version } = values;
+let { quiet, dryrun, output, help, version, overwrite } = values;
 
 if(version) {
 	const require = createRequire(import.meta.url);
@@ -68,6 +72,9 @@ if(help) {
 
   # Change the output folder
   npx @11ty/import [type] [target] --output=dist
+
+	# Allow overwriting existing files
+  npx @11ty/import [type] [target] --overwrite
 `);
 
 	process.exit();
@@ -90,6 +97,7 @@ importer.setCacheDuration("4h");
 importer.setDraftsFolder("drafts");
 importer.setOutputFolder(output);
 
+importer.setSafeMode(!overwrite);
 importer.setDryRun(dryrun);
 importer.addSource(type, target);
 

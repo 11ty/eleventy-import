@@ -52,6 +52,7 @@ class Fetcher {
 		this.errors = new Set();
 		this.isVerbose = true;
 		this.dryRun = false;
+		this.safeMode = true;
 	}
 
 	setVerbose(isVerbose) {
@@ -60,6 +61,10 @@ class Fetcher {
 
 	setDryRun(isDryRun) {
 		this.dryRun = Boolean(isDryRun);
+	}
+
+	setSafeMode(safeMode) {
+		this.safeMode = Boolean(safeMode);
 	}
 
 	getCounts() {
@@ -92,31 +97,38 @@ class Fetcher {
 		if(!this.writtenAssetFiles.has(fullOutputLocation)) {
 			this.writtenAssetFiles.add(fullOutputLocation);
 
-			if(this.#directoryManager) {
-				this.#directoryManager.createDirectoryForPath(fullOutputLocation);
-			}
-
-			// async, but we don’t need to wait
-			promise = this.fetch(url, {
-				type: "buffer",
-			},
-			{
-				verbose: true,
-				showErrors: true
-			}).then(result => {
-				if(result) {
-					if(this.isVerbose) {
-						Logger.importing("asset", fullOutputLocation, url, {
-							size: result.length,
-							dryRun: this.dryRun
-						});
-					}
-
-					if(!this.dryRun) {
-						fs.writeFileSync(fullOutputLocation, result);
-					}
+			if(this.safeMode && fs.existsSync(fullOutputLocation)) {
+				if(this.isVerbose) {
+					Logger.skipping("asset", fullOutputLocation, url);
 				}
-			});
+			} else {
+
+				if(this.#directoryManager) {
+					this.#directoryManager.createDirectoryForPath(fullOutputLocation);
+				}
+
+				// async, but we don’t need to wait
+				promise = this.fetch(url, {
+					type: "buffer",
+				},
+				{
+					verbose: true,
+					showErrors: true
+				}).then(result => {
+					if(result) {
+						if(this.isVerbose) {
+							Logger.importing("asset", fullOutputLocation, url, {
+								size: result.length,
+								dryRun: this.dryRun
+							});
+						}
+
+						if(!this.dryRun) {
+							fs.writeFileSync(fullOutputLocation, result);
+						}
+					}
+				});
+			}
 		}
 
 		return {
