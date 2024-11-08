@@ -67,8 +67,8 @@ class BlueskyUser extends DataSource {
 				}
 			],
 			date: this.toIsoDate(entry.pubDate),
-			// TODO linkify, nl2br
 			content: entry.description,
+			contentType: "text",
 		}
 	}
 }

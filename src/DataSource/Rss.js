@@ -58,6 +58,7 @@ class Rss extends DataSource {
 			date: this.toIsoDate(entry.pubDate),
 			// dateUpdated: entry.updated,
 			content: entry["content:encoded"] || entry.content || entry.description,
+			// contentType: "", // unknown
 		}
 	}
 }

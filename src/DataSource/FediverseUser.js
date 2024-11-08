@@ -80,8 +80,8 @@ class FediverseUser extends DataSource {
 				}
 			],
 			date: this.toIsoDate(entry.pubDate),
-			// TODO linkify, nl2br
 			content: entry.description,
+			contentType: "html",
 		}
 	}
 }

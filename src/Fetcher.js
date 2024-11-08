@@ -48,7 +48,7 @@ class Fetcher {
 
 	constructor() {
 		this.fetchedUrls = new Set();
-		this.writtenImageFiles = new Set();
+		this.writtenAssetFiles = new Set();
 		this.errors = new Set();
 		this.isVerbose = true;
 		this.dryRun = false;
@@ -64,12 +64,12 @@ class Fetcher {
 
 	getCounts() {
 		let total = this.fetchedUrls.size;
-		let images = this.writtenImageFiles.size;
+		let assets = this.writtenAssetFiles.size;
 
 		return {
 			fetches: {
-				data: total - images,
-				images,
+				data: total - assets,
+				assets,
 			},
 			errors: this.errors.size,
 		}
@@ -83,14 +83,14 @@ class Fetcher {
 		this.#directoryManager = manager;
 	}
 
-	fetchImage(url, outputFolder, urlPath = "img") {
+	fetchAsset(url, outputFolder, urlPath = "assets") {
 		let filename = Fetcher.getFilenameFromSrc(url);
-		let imageUrlLocation = path.join(urlPath, filename);
-		let fullOutputLocation = path.join(outputFolder, imageUrlLocation);
+		let assetUrlLocation = path.join(urlPath, filename);
+		let fullOutputLocation = path.join(outputFolder, assetUrlLocation);
 
 		let promise;
-		if(!this.writtenImageFiles.has(fullOutputLocation)) {
-			this.writtenImageFiles.add(fullOutputLocation);
+		if(!this.writtenAssetFiles.has(fullOutputLocation)) {
+			this.writtenAssetFiles.add(fullOutputLocation);
 
 			if(this.#directoryManager) {
 				this.#directoryManager.createDirectoryForPath(fullOutputLocation);
@@ -106,7 +106,7 @@ class Fetcher {
 			}).then(result => {
 				if(result) {
 					if(this.isVerbose) {
-						Logger.importing("image", fullOutputLocation, url, {
+						Logger.importing("asset", fullOutputLocation, url, {
 							size: result.length,
 							dryRun: this.dryRun
 						});
@@ -121,7 +121,7 @@ class Fetcher {
 
 		return {
 			file: fullOutputLocation,
-			url: `/${imageUrlLocation}`,
+			url: `/${assetUrlLocation}`,
 			promise: promise || Promise.resolve(),
 		};
 	}

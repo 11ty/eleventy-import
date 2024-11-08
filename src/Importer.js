@@ -1,12 +1,12 @@
 import path from "node:path";
 import fs from "graceful-fs";
 import yaml from "js-yaml";
-import kleur from "kleur";
 
 import { Logger } from "./Logger.js";
 import { Fetcher } from "./Fetcher.js";
 import { DirectoryManager } from "./DirectoryManager.js";
 import { MarkdownToHtml } from "./MarkdownToHtml.js";
+import { HtmlTransformer } from "./HtmlTransformer.js";
 import { YouTubeUser } from "./DataSource/YouTubeUser.js";
 import { Atom } from "./DataSource/Atom.js";
 import { Rss } from "./DataSource/Rss.js";
@@ -26,10 +26,11 @@ class Importer {
 		this.dryRun = false;
 
 		this.markdownService = new MarkdownToHtml();
+		this.htmlTransformer = new HtmlTransformer();
 		this.directoryManager = new DirectoryManager();
 		this.fetcher = new Fetcher();
 
-		this.markdownService.setFetcher(this.fetcher);
+		this.htmlTransformer.setFetcher(this.fetcher);
 
 		this.fetcher.setDirectoryManager(this.directoryManager);
 	}
@@ -61,7 +62,7 @@ class Importer {
 
 	setOutputFolder(dir) {
 		this.#outputFolder = dir;
-		this.markdownService.setOutputFolder(dir);
+		this.htmlTransformer.setOutputFolder(dir);
 	}
 
 	setCacheDuration(duration) {
@@ -135,6 +136,12 @@ class Importer {
 		}
 	}
 
+	static isHtml(entry) {
+		// TODO add a CLI option for --importContentType?
+		// TODO add another path to guess if content is HTML https://mimesniff.spec.whatwg.org/#identifying-a-resource-with-an-unknown-mime-type
+		return entry.contentType === "html";
+	}
+
 	async getEntries(options = {}) {
 		let entries = [];
 		for(let source of this.sources) {
@@ -148,8 +155,12 @@ class Importer {
 		}
 
 		let promises = await Promise.all(entries.map(async entry => {
-			if(options.contentType === "markdown") {
-				entry.content = await this.markdownService.toHtml(entry.content, entry.url);
+			if(Importer.isHtml(entry)) {
+				entry.content = await this.htmlTransformer.transform(entry.content, entry.url);
+
+				if(options.contentType === "markdown") {
+					entry.content = await this.markdownService.toMarkdown(entry.content, entry.url);
+				}
 			}
 
 			if(options.contentType) {

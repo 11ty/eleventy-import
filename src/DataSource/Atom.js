@@ -63,6 +63,7 @@ class Atom extends DataSource {
 			date: entry.published || entry.updated,
 			dateUpdated: entry.updated,
 			content: entry.content["#text"],
+			contentType: entry.content["@_type"],
 		}
 	}
 }

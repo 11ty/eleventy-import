@@ -46,6 +46,7 @@ class YouTubeUser extends DataSource {
 			dateUpdated: entry.updated,
 			// TODO linkify, nl2br
 			content: entry['media:group']['media:description'],
+			contentType: "text",
 		}
 	}
 }

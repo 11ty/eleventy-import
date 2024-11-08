@@ -130,7 +130,7 @@ class WordPressApi extends DataSource {
 	async cleanEntry(entry, data) {
 		let metadata = {};
 		if(entry.jetpack_featured_media_url) {
-			let featuredImage = this.fetcher.fetchImage(entry.jetpack_featured_media_url, this.outputFolder);
+			let featuredImage = this.fetcher.fetchAsset(entry.jetpack_featured_media_url, this.outputFolder);
 			metadata.featuredImage = featuredImage.url;
 		}
 
@@ -153,6 +153,7 @@ class WordPressApi extends DataSource {
 			date: entry.date_gmt,
 			dateUpdated: entry.modified_gmt,
 			content: entry.content.rendered,
+			contentType: "html",
 			status: this.cleanStatus(entry.status),
 			metadata,
 		};

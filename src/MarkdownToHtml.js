@@ -8,21 +8,6 @@ const WORDPRESS_TO_PRISM_LANGUAGE_TRANSLATION = {
 
 class MarkdownToHtml {
 	#turndownService;
-	#outputFolder;
-	#fetcher;
-
-	constructor() {
-		this.outputImages = new Set();
-		this.imageFetchPromises = [];
-	}
-
-	setFetcher(fetcher) {
-		this.#fetcher = fetcher;
-	}
-
-	setOutputFolder(dir) {
-		this.#outputFolder = dir;
-	}
 
 	get turndownService() {
 		if(!this.#turndownService) {
@@ -45,7 +30,7 @@ class MarkdownToHtml {
 				}
 			});
 
-			this.#turndownService.addRule("raw-picture", {
+			this.#turndownService.addRule("picture-unsupported", {
 				filter: ["picture"],
 				replacement: function(content, node) {
 					Logger.warning( `<picture> node found, but not yet supported in markdown import.` );
@@ -53,7 +38,7 @@ class MarkdownToHtml {
 				}
 			});
 
-			this.#turndownService.addRule("raw-image", {
+			this.#turndownService.addRule("prefer-high-res-images", {
 				filter: ["img"],
 				replacement: (content, node, options) => {
 					// prefer highest-resolution (first) srcset
@@ -63,10 +48,7 @@ class MarkdownToHtml {
 						alt: node.getAttribute("alt"),
 					}
 
-					let { url, promise } = this.#fetcher.fetchImage(attrs.src, this.#outputFolder);
-					this.imageFetchPromises.push(promise);
-
-					return `![${attrs.alt}](${url})`;
+					return `![${attrs.alt}](${attrs.src})`;
 				}
 			});
 		}
@@ -74,14 +56,8 @@ class MarkdownToHtml {
 		return this.#turndownService;
 	}
 
-	async toHtml(html, viaUrl) {
+	async toMarkdown(html, viaUrl) {
 		let content = this.turndownService.turndown(html);
-
-		try {
-			await Promise.allSettled(this.imageFetchPromises);
-		} catch(e) {
-			Logger.error(`>> Error fetching images${viaUrl ? ` for ${viaUrl}` : ""}`);
-		}
 
 		return content;
 	}
