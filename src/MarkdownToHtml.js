@@ -30,15 +30,15 @@ class MarkdownToHtml {
 				}
 			});
 
-			this.#turndownService.addRule("picture-unsupported", {
-				filter: ["picture"],
-				replacement: function(content, node) {
-					Logger.warning( `<picture> node found, but not yet supported in markdown import.` );
-					return "";
-				}
-			});
+			// this.#turndownService.addRule("picture-unsupported", {
+			// 	filter: ["picture"],
+			// 	replacement: function(content, node) {
+			// 		Logger.warning( `<picture> node found, but not yet supported in markdown import.` );
+			// 		return "";
+			// 	}
+			// });
 
-			this.#turndownService.addRule("prefer-high-res-images", {
+			this.#turndownService.addRule("prefer-highest-resolution-images", {
 				filter: ["img"],
 				replacement: (content, node, options) => {
 					// prefer highest-resolution (first) srcset
