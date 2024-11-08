@@ -11,7 +11,10 @@ npx @11ty/import --version
 # Import content
 npx @11ty/import [type] [target]
 
-# Quietly
+# Dry run (don’t write files)
+npx @11ty/import [type] [target] --dryrun
+
+# Quietly (limit of console output)
 npx @11ty/import [type] [target] --quiet
 
 # Change the output folder

@@ -60,7 +60,10 @@ if(help) {
   # Import content
   npx @11ty/import [type] [target]
 
-  # Quietly
+  # Dry run (don’t write files)
+  npx @11ty/import [type] [target] --dryrun
+
+  # Quietly (limit console output)
   npx @11ty/import [type] [target] --quiet
 
   # Change the output folder
