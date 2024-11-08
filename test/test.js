@@ -23,7 +23,7 @@ test("YouTube user", async (t) => {
 	assert.ok(entries.length, 15);
 
 	let [post] = entries;
-	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "date", "dateUpdated", "title", "type", "url", "uuid"]);
+	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "contentType", "date", "dateUpdated", "title", "type", "url", "uuid"]);
 	assert.equal(post.content.length, 812);
 	assert.equal(post.authors[0].name, "Eleventy");
 });
@@ -46,7 +46,7 @@ test("WordPress import", async (t) => {
 	assert.equal(entries.length, 1);
 
 	let [post] = entries;
-	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "date", "dateUpdated", "metadata", "status", "title", "type", "url", "uuid"]);
-	assert.equal(post.content.length, 7734);
+	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "contentType", "date", "dateUpdated", "metadata", "status", "title", "type", "url", "uuid"]);
+	assert.equal(post.content.length, 6144);
 	assert.equal(post.authors[0].name, "Matt Johnson");
 });

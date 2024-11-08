@@ -2,7 +2,7 @@ import posthtml from "posthtml";
 import urls from "posthtml-urls";
 
 class HtmlTransformer {
-	#outputFolder;
+	#outputFolder = ".";
 	#fetcher;
 
 	constructor() {

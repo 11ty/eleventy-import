@@ -7,7 +7,7 @@ class DataSource {
 
 	#fetcher;
 	#fetchDataOverrides = {};
-	#outputFolder;
+	#outputFolder = ".";
 
 	constructor() {
 		this.isVerbose = true;
