@@ -130,8 +130,7 @@ class WordPressApi extends DataSource {
 	async cleanEntry(entry, data) {
 		let metadata = {};
 		if(entry.jetpack_featured_media_url) {
-			let featuredImage = this.fetcher.fetchAsset(entry.jetpack_featured_media_url, this.outputFolder);
-			metadata.featuredImage = featuredImage.url;
+			metadata.featuredImage = await this.fetcher.fetchAsset(entry.jetpack_featured_media_url, this.outputFolder);
 		}
 
 		let categories = await this.#getCategories(entry.categories);

@@ -88,66 +88,63 @@ class Fetcher {
 		this.#directoryManager = manager;
 	}
 
-	fetchAsset(url, outputFolder, urlPath = "assets") {
+	async fetchAsset(url, outputFolder, urlPath = "assets") {
 		let filename = Fetcher.getFilenameFromSrc(url);
 		let assetUrlLocation = path.join(urlPath, filename);
 		let fullOutputLocation = path.join(outputFolder, assetUrlLocation);
+		let urlValue = `/${assetUrlLocation}`;
 
-		let promise;
-		if(!this.writtenAssetFiles.has(fullOutputLocation)) {
-			this.writtenAssetFiles.add(fullOutputLocation);
-
-			if(this.safeMode && fs.existsSync(fullOutputLocation)) {
-				if(this.isVerbose) {
-					Logger.skipping("asset", fullOutputLocation, url);
-				}
-			} else {
-
-				if(this.#directoryManager) {
-					this.#directoryManager.createDirectoryForPath(fullOutputLocation);
-				}
-
-				// async, but we don’t need to wait
-				promise = this.fetch(url, {
-					type: "buffer",
-				},
-				{
-					verbose: true,
-					showErrors: true
-				}).then(result => {
-					if(result) {
-						if(this.isVerbose) {
-							Logger.importing("asset", fullOutputLocation, url, {
-								size: result.length,
-								dryRun: this.dryRun
-							});
-						}
-
-						if(!this.dryRun) {
-							fs.writeFileSync(fullOutputLocation, result);
-						}
-					}
-				});
-			}
+		if(this.writtenAssetFiles.has(fullOutputLocation)) {
+			return urlValue;
 		}
 
-		return {
-			file: fullOutputLocation,
-			url: `/${assetUrlLocation}`,
-			promise: promise || Promise.resolve(),
-		};
+		this.writtenAssetFiles.add(fullOutputLocation);
+
+		if(this.safeMode && fs.existsSync(fullOutputLocation)) {
+			if(this.isVerbose) {
+				Logger.skipping("asset", fullOutputLocation, url);
+			}
+			return urlValue;
+		}
+
+		if(this.#directoryManager) {
+			this.#directoryManager.createDirectoryForPath(fullOutputLocation);
+		}
+
+		return this.fetch(url, {
+			type: "buffer",
+		},
+		{
+			verbose: true,
+			showErrors: true
+		}).then(result => {
+			if(result) {
+				if(this.isVerbose) {
+					Logger.importing("asset", fullOutputLocation, url, {
+						size: result.length,
+						dryRun: this.dryRun
+					});
+				}
+
+				if(!this.dryRun) {
+					fs.writeFileSync(fullOutputLocation, result);
+				}
+			}
+
+			return urlValue;
+		});
 	}
 
 	async fetch(url, options = {}, verbosity = {}) {
 		let { verbose, showErrors } = Object.assign({
 			showErrors: true,
-			verbose: true, // log the fetch request?
+			verbose: true, // whether to log the fetch request
 		}, verbosity);
 
 		let opts = Object.assign({
 			duration: this.#cacheDuration,
 			type: "text",
-			verbose: false, // we’re doing our own logging
+			verbose: false, // we’re handling our own logging here
 			fetchOptions: {},
 		}, options);
 
