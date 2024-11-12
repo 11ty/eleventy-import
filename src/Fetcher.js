@@ -11,6 +11,7 @@ import { Logger } from "./Logger.js";
 const HASH_FILENAME_MAXLENGTH = 12;
 const MAXIMUM_URL_FILENAME_SIZE = 30;
 
+// TODO use `type: "parsed-xml" type from Eleventy Fetch
 const xmlParser = new XMLParser({
 	attributeNamePrefix : "@_",
 	ignoreAttributes: false,
@@ -21,7 +22,7 @@ const xmlParser = new XMLParser({
 class Fetcher {
 	static USER_AGENT = "Eleventy Import v1.0.0";
 
-	static getFilenameFromSrc(src) {
+	static getFilenameFromSrc(src, fileExtensionFallback) {
 		let {pathname} = new URL(src);
 		let hash = this.createHash(src);
 
@@ -34,7 +35,8 @@ class Fetcher {
 			return `${filenameWithoutExtension}-${hash}.${extension}`;
 		}
 
-		return `${filename.slice(0, MAXIMUM_URL_FILENAME_SIZE)}-${hash}`;
+		// No known file extension
+		return `${filename.slice(0, MAXIMUM_URL_FILENAME_SIZE)}-${hash}${fileExtensionFallback ? `.${fileExtensionFallback}` : ""}`;
 	}
 
 	static createHash(str) {
@@ -89,16 +91,25 @@ class Fetcher {
 	}
 
 	async fetchAsset(url, outputFolder, urlPath = "assets") {
-		let filename = Fetcher.getFilenameFromSrc(url);
+		// TODO move this upstream as a Fetch `alias` feature.
+		let result = await this.fetch(url, {
+			type: "buffer",
+			returnType: "response",
+		},
+		{
+			verbose: true,
+			showErrors: true
+		});
+
+		let [, extension] = result.headers?.["content-type"]?.split("/");
+		let filename = Fetcher.getFilenameFromSrc(url, extension);
 		let assetUrlLocation = path.join(urlPath, filename);
 		let fullOutputLocation = path.join(outputFolder, assetUrlLocation);
 		let urlValue = `/${assetUrlLocation}`;
 
-		if(this.writtenAssetFiles.has(fullOutputLocation)) {
+		if(!result?.body || this.writtenAssetFiles.has(fullOutputLocation)) {
 			return urlValue;
 		}
-
-		this.writtenAssetFiles.add(fullOutputLocation);
 
 		if(this.safeMode && fs.existsSync(fullOutputLocation)) {
 			if(this.isVerbose) {
@@ -107,32 +118,24 @@ class Fetcher {
 			return urlValue;
 		}
 
+		this.writtenAssetFiles.add(fullOutputLocation);
+
 		if(this.#directoryManager) {
 			this.#directoryManager.createDirectoryForPath(fullOutputLocation);
 		}
 
-		return this.fetch(url, {
-			type: "buffer",
-		},
-		{
-			verbose: true,
-			showErrors: true
-		}).then(result => {
-			if(result) {
-				if(this.isVerbose) {
-					Logger.importing("asset", fullOutputLocation, url, {
-						size: result.length,
-						dryRun: this.dryRun
-					});
-				}
+		if(this.isVerbose) {
+			Logger.importing("asset", fullOutputLocation, url, {
+				size: result.body.length,
+				dryRun: this.dryRun
+			});
+		}
 
-				if(!this.dryRun) {
-					fs.writeFileSync(fullOutputLocation, result);
-				}
-			}
+		if(!this.dryRun) {
+			fs.writeFileSync(fullOutputLocation, result.body);
+		}
 
-			return urlValue;
-		});
+		return urlValue;
 	}
 
 	async fetch(url, options = {}, verbosity = {}) {
