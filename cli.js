@@ -108,10 +108,13 @@ let importer = new Importer();
 importer.setOutputFolder(output);
 importer.setCacheDuration(cacheduration);
 importer.setVerbose(!quiet);
-importer.setDraftsFolder("drafts");
 importer.setSafeMode(!overwrite);
 importer.setDryRun(dryrun);
 importer.addSource(type, target);
+
+// TODO wire these up to CLI
+importer.setDraftsFolder("drafts");
+importer.setAssetsFolder("assets");
 
 let entries = await importer.getEntries({
 	contentType: format,

@@ -8,6 +8,8 @@ import { Fetcher } from "./Fetcher.js";
 import { DirectoryManager } from "./DirectoryManager.js";
 import { MarkdownToHtml } from "./MarkdownToHtml.js";
 import { HtmlTransformer } from "./HtmlTransformer.js";
+
+// Data Sources
 import { YouTubeUser } from "./DataSource/YouTubeUser.js";
 import { Atom } from "./DataSource/Atom.js";
 import { Rss } from "./DataSource/Rss.js";
@@ -62,6 +64,10 @@ class Importer {
 		for(let source of this.sources) {
 			source.setVerbose(isVerbose);
 		}
+	}
+
+	setAssetsFolder(folder) {
+		this.fetcher.setAssetsFolder(folder);
 	}
 
 	getCounts() {
@@ -171,7 +177,7 @@ class Importer {
 
 		let promises = await Promise.allSettled(entries.map(async entry => {
 			if(Importer.isHtml(entry)) {
-				entry.content = await this.htmlTransformer.transform(entry.content, entry.url);
+				entry.content = await this.htmlTransformer.transform(entry.content);
 
 				if(options.contentType === "markdown") {
 					entry.content = await this.markdownService.toMarkdown(entry.content, entry.url);
@@ -186,6 +192,7 @@ class Importer {
 		}));
 
 		return promises.filter(entry => {
+			// Documents with errors
 			return entry.status !== "rejected";
 		}).map(entry => {
 			return entry.value;

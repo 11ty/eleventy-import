@@ -48,6 +48,7 @@ class Fetcher {
 
 	#cacheDuration = "0s";
 	#directoryManager;
+	#assetsFolder = "assets";
 
 	constructor() {
 		this.fetchedUrls = new Set();
@@ -73,6 +74,10 @@ class Fetcher {
 		this.safeMode = Boolean(safeMode);
 	}
 
+	setAssetsFolder(folder) {
+		this.#assetsFolder = folder;
+	}
+
 	getCounts() {
 		return {
 			assets: this.counts.assets,
@@ -88,7 +93,7 @@ class Fetcher {
 		this.#directoryManager = manager;
 	}
 
-	async fetchAsset(url, outputFolder, urlPath = "assets") {
+	async fetchAsset(url, outputFolder) {
 		// TODO move this upstream as a Fetch `alias` feature.
 		return this.fetch(url, {
 			type: "buffer",
@@ -96,10 +101,10 @@ class Fetcher {
 		},
 		{
 			verbose: true,
-			showErrors: true
+			showErrors: true,
 		}).then(result => {
 			let filename = Fetcher.getFilenameFromSrc(url, result.headers?.["content-type"]);
-			let assetUrlLocation = path.join(urlPath, filename);
+			let assetUrlLocation = path.join(this.#assetsFolder, filename);
 			let fullOutputLocation = path.join(outputFolder, assetUrlLocation);
 			let urlValue = `/${assetUrlLocation}`;
 
