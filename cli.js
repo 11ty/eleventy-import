@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { parseArgs } from "node:util";
-import kleur from "kleur";
 
 import { Importer } from "./src/Importer.js";
 import { Logger } from "./src/Logger.js";
