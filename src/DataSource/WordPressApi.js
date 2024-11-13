@@ -55,10 +55,14 @@ class WordPressApi extends DataSource {
 			// status=publish,future,draft,pending,private
 			// status=any
 
-			// Commas are encoded later
-			let statuses = "publish,draft";
+			let statusStr = "";
+			// Only request Drafts if auth’d
+			if(process.env.WORDPRESS_USERNAME && process.env.WORDPRESS_PASSWORD) {
+				// Commas are encoded
+				statusStr = `&status=${encodeURIComponent("publish,draft")}`;
+			}
 
-			return this.#getSubtypeUrl("posts", `?page=${pageNumber}&per_page=100&status=${encodeURIComponent(statuses)}`);
+			return this.#getSubtypeUrl("posts", `?page=${pageNumber}&per_page=100${statusStr}`);
 		};
 	}
 
