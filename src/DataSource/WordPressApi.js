@@ -138,9 +138,11 @@ class WordPressApi extends DataSource {
 
 	// Supports: Title, Author, Published/Updated Dates
 	async cleanEntry(entry, data) {
+		let url = this.getUrlFromEntry(entry);
+
 		let metadata = {};
 		if(entry.jetpack_featured_media_url) {
-			metadata.featuredImage = await this.fetcher.fetchAsset(entry.jetpack_featured_media_url, this.outputFolder);
+			metadata.featuredImage = await this.fetcher.fetchAsset(entry.jetpack_featured_media_url, this.outputFolder, url);
 		}
 
 		let categories = await this.#getCategories(entry.categories);
@@ -157,7 +159,7 @@ class WordPressApi extends DataSource {
 			uuid: this.getUniqueIdFromEntry(entry),
 			type: WordPressApi.TYPE,
 			title: entry.title?.rendered,
-			url: this.getUrlFromEntry(entry),
+			url,
 			authors: await this.#getAuthors(entry.author),
 			date: entry.date_gmt,
 			dateUpdated: entry.modified_gmt,

@@ -96,9 +96,9 @@ class Fetcher {
 	async fetchAsset(url, outputFolder, contextPageUrl) {
 		// Adds protocol from original page URL if a protocol relative URL
 		if(url.startsWith("//")) {
-			let [protocol] = contextPageUrl.split("://");
-			if(protocol) {
-				url = `${protocol}:${url}`;
+			let contextUrl = new URL(contextPageUrl);
+			if(contextUrl.protocol) {
+				url = `${contextUrl.protocol}${url}`;
 			}
 		}
 
@@ -111,8 +111,16 @@ class Fetcher {
 			verbose: true,
 			showErrors: true,
 		}).then(result => {
+			let contextPathname = "";
+			if(contextPageUrl) {
+				let u = (new URL(contextPageUrl)).pathname.split("/").filter(entry => Boolean(entry));
+				// pop off the top folder
+				u.pop();
+				contextPathname = u.join("/");
+			}
+
 			let filename = Fetcher.getFilenameFromSrc(url, result.headers?.["content-type"]);
-			let assetUrlLocation = path.join(this.#assetsFolder, filename);
+			let assetUrlLocation = path.join(contextPathname, this.#assetsFolder, filename);
 			let fullOutputLocation = path.join(outputFolder, assetUrlLocation);
 			let urlValue = `/${assetUrlLocation}`;
 

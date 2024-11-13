@@ -69,16 +69,18 @@ class HostedWordPressApi extends DataSource {
 			tags: Object.keys(entry.tags),
 		};
 
+		let url = this.getUrlFromEntry(entry);
+
 		if(entry.featured_image) {
 			// TODO opengraphImage: { width, height, src, mime }
-			metadata.featuredImage = await this.fetcher.fetchAsset(entry.featured_image, this.outputFolder);
+			metadata.featuredImage = await this.fetcher.fetchAsset(entry.featured_image, this.outputFolder, url);
 		}
 
 		return {
 			uuid: this.getUniqueIdFromEntry(entry),
 			type: HostedWordPressApi.TYPE,
 			title: entry.title,
-			url: this.getUrlFromEntry(entry),
+			url,
 			authors: this.#getAuthorData(entry.author),
 			date: entry.date,
 			dateUpdated: entry.modified,
