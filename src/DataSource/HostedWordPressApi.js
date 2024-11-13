@@ -2,7 +2,7 @@ import { DataSource } from "../DataSource.js";
 
 class HostedWordPressApi extends DataSource {
 	static TYPE = "wordpressapi-hosted";
-	static TYPE_FRIENDLY = "Hosted WordPress";
+	static TYPE_FRIENDLY = "WordPress.com";
 
 	static #getHostname(url) {
 		try {

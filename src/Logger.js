@@ -10,20 +10,23 @@ class Logger {
 		let { size, dryRun } = options;
 
 		let extras = [];
+		let prefix = "";
 		if(label === "Skipping") {
-			extras.push("overwrites disabled");
+			prefix = " (no --overwrite)";
 		} else {
 			if(size) {
 				extras.push(filesize(size, {
 					spacer: ""
 				}));
 			}
+
 			if(dryRun) {
-				extras.push("dry run");
+				prefix = " (dry run)";
 			}
 		}
+
 		let extrasStr = extras.length ? `(${extras.join(", ")}) ` : "";
-		this.log(kleur.gray(`${label} ${type}`), local, kleur.gray(`${extrasStr}from`), remote);
+		this.log(kleur.gray(`${label} ${type}${prefix}`), local, kleur.gray(`${extrasStr}from`), remote);
 	}
 
 	static importing(type, local, remote, options = {}) {

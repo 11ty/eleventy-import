@@ -169,7 +169,7 @@ class Importer {
 			entries = entries.slice(0, MAX_IMPORT_SIZE);
 		}
 
-		let promises = await Promise.all(entries.map(async entry => {
+		let promises = await Promise.allSettled(entries.map(async entry => {
 			if(Importer.isHtml(entry)) {
 				entry.content = await this.htmlTransformer.transform(entry.content, entry.url);
 
@@ -185,7 +185,11 @@ class Importer {
 			return entry;
 		}));
 
-		return promises.sort((a, b) => {
+		return promises.filter(entry => {
+			return entry.status !== "rejected";
+		}).map(entry => {
+			return entry.value;
+		}).sort((a, b) => {
 			if(a.date < b.date) {
 				return 1;
 			}

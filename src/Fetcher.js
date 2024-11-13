@@ -22,7 +22,7 @@ const xmlParser = new XMLParser({
 class Fetcher {
 	static USER_AGENT = "Eleventy Import v1.0.0";
 
-	static getFilenameFromSrc(src, fileExtensionFallback) {
+	static getFilenameFromSrc(src, contentType = "") {
 		let {pathname} = new URL(src);
 		let hash = this.createHash(src);
 
@@ -35,6 +35,7 @@ class Fetcher {
 			return `${filenameWithoutExtension}-${hash}.${extension}`;
 		}
 
+		let [, fileExtensionFallback] = contentType.split("/");
 		// No known file extension
 		return `${filename.slice(0, MAXIMUM_URL_FILENAME_SIZE)}-${hash}${fileExtensionFallback ? `.${fileExtensionFallback}` : ""}`;
 	}
@@ -89,66 +90,76 @@ class Fetcher {
 
 	async fetchAsset(url, outputFolder, urlPath = "assets") {
 		// TODO move this upstream as a Fetch `alias` feature.
-		let result = await this.fetch(url, {
+		return this.fetch(url, {
 			type: "buffer",
 			returnType: "response",
 		},
 		{
 			verbose: true,
 			showErrors: true
-		});
+		}).then(result => {
+			let filename = Fetcher.getFilenameFromSrc(url, result.headers?.["content-type"]);
+			let assetUrlLocation = path.join(urlPath, filename);
+			let fullOutputLocation = path.join(outputFolder, assetUrlLocation);
+			let urlValue = `/${assetUrlLocation}`;
 
-		let [, extension] = result.headers?.["content-type"]?.split("/");
-		let filename = Fetcher.getFilenameFromSrc(url, extension);
-		let assetUrlLocation = path.join(urlPath, filename);
-		let fullOutputLocation = path.join(outputFolder, assetUrlLocation);
-		let urlValue = `/${assetUrlLocation}`;
-
-		if(this.writtenAssetFiles.has(fullOutputLocation)) {
-			return urlValue;
-		}
-
-		this.writtenAssetFiles.add(fullOutputLocation);
-
-		if(this.safeMode && fs.existsSync(fullOutputLocation)) {
-			if(this.isVerbose) {
-				Logger.skipping("asset", fullOutputLocation, url);
+			if(this.writtenAssetFiles.has(fullOutputLocation)) {
+				return urlValue;
 			}
+
+			this.writtenAssetFiles.add(fullOutputLocation);
+
+			if(this.safeMode && fs.existsSync(fullOutputLocation)) {
+				if(this.isVerbose) {
+					Logger.skipping("asset", fullOutputLocation, url);
+				}
+				return urlValue;
+			}
+
+			if(this.#directoryManager) {
+				this.#directoryManager.createDirectoryForPath(fullOutputLocation);
+			}
+
+			if(this.isVerbose) {
+				Logger.importing("asset", fullOutputLocation, url, {
+					size: result.body.length,
+					dryRun: this.dryRun
+				});
+			}
+
+			if(!this.dryRun) {
+				this.counts.assets++;
+
+				fs.writeFileSync(fullOutputLocation, result.body);
+			}
+
 			return urlValue;
-		}
-
-		if(this.#directoryManager) {
-			this.#directoryManager.createDirectoryForPath(fullOutputLocation);
-		}
-
-		if(this.isVerbose) {
-			Logger.importing("asset", fullOutputLocation, url, {
-				size: result.body.length,
-				dryRun: this.dryRun
-			});
-		}
-
-		if(!this.dryRun) {
-			this.counts.assets++;
-
-			fs.writeFileSync(fullOutputLocation, result.body);
-		}
-
-		return urlValue;
+		}, error => {
+			// Logging the error happens in .fetch() upstream
+			// Fetching the asset failed but we don’t want to fail the upstream document promise
+			return "";
+		});
 	}
 
 	async fetch(url, options = {}, verbosity = {}) {
 		let { verbose, showErrors } = Object.assign({
-			showErrors: true,
-			verbose: true, // whether to log the fetch request
+			verbose: true, // whether to log the initial fetch request
+			showErrors: true, // whether to show if a request has an error.
 		}, verbosity);
 
 		let opts = Object.assign({
 			duration: this.#cacheDuration,
 			type: "text",
-			verbose: false, // we’re handling our own logging here
+			verbose: false, // don’t use Fetch logging—we’re handling it ourself
 			fetchOptions: {},
 		}, options);
+
+		if(!opts.fetchOptions.headers) {
+			opts.fetchOptions.headers = {};
+		}
+		Object.assign(opts.fetchOptions.headers, {
+			"user-agent": Fetcher.USER_AGENT
+		});
 
 		if(!this.fetchedUrls.has(url) && this.isVerbose && verbose) {
 			let logAdds = [];
@@ -164,31 +175,21 @@ class Fetcher {
 
 		this.fetchedUrls.add(url);
 
-		if(!opts.fetchOptions.headers) {
-			opts.fetchOptions.headers = {};
-		}
-		Object.assign(opts.fetchOptions.headers, {
-			"user-agent": Fetcher.USER_AGENT
-		});
-
-		try {
-			let result = await EleventyFetch(url, opts);
-
+		return EleventyFetch(url, opts).then(result => {
 			if(opts.type === "xml") {
 				return xmlParser.parse(result);
 			}
 
 			return result;
-		} catch(e) {
+		}, error => {
 			this.errors.add(url);
 
-			// if(this.isVerbose && showErrors) {
-			if(showErrors) {
-				Logger.log(kleur.red(`Error fetching`), url, kleur.red(e.message));
+			if(this.isVerbose && showErrors) {
+				Logger.log(kleur.red(`Error fetching`), url, kleur.red(error.message));
 			}
 
-			return Promise.reject(e);
-		}
+			return Promise.reject(error);
+		});
 	}
 }
 
