@@ -51,7 +51,7 @@ test("WordPress import", async (t) => {
 	assert.equal(post.authors[0].name, "Matt Johnson");
 });
 
-test("addSource using DataSource instance", async (t) => {
+test("addSource using DataSource", async (t) => {
 	let importer = new Importer();
 
 	importer.setVerbose(false);
@@ -73,24 +73,15 @@ test("addSource using DataSource instance", async (t) => {
 });
 
 
-test("addSource needs to use DataSource instance", async (t) => {
+test("addSource needs to use DataSource", async (t) => {
 	let importer = new Importer();
 
 	importer.setVerbose(false);
 	importer.setDryRun(true);
 
 	assert.throws(() => {
-		class MySource {
-			static TYPE = "arbitrary";
-			static TYPE_FRIENDLY = "Arbitrary";
-
-			getData() {
-				return [];
-			}
-		}
-
-		importer.addSource(MySource);
+		importer.addSource(class MySource {});
 	}, {
-		message: "MySource is not a supported type for addSource(). Requires a string type or a DataSource instance."
+		message: "MySource is not a supported type for addSource(). Requires a string type or a DataSource class."
 	})
 });

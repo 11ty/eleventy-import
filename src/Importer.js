@@ -117,7 +117,7 @@ class Importer {
 		}
 
 		if(!cls) {
-			throw new Error(`${type} is not a supported type for addSource(). Requires a string type or a DataSource instance.`);
+			throw new Error(`${type} is not a supported type for addSource(). Requires a string type or a DataSource class.`);
 		}
 
 		let identifier;
@@ -135,7 +135,7 @@ class Importer {
 		let source = new cls(identifier);
 
 		if(!(source instanceof DataSource)) {
-			throw new Error(`${cls?.name} is not a supported type for addSource(). Requires a string type or a DataSource instance.`);
+			throw new Error(`${cls?.name} is not a supported type for addSource(). Requires a string type or a DataSource class.`);
 		}
 
 		source.setFetcher(this.fetcher);
