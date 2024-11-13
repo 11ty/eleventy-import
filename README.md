@@ -38,7 +38,8 @@ npx @11ty/import [type] [target] --overwrite
 npx @11ty/import youtubeuser UCskGTioqrMBcw8pd14_334A
 
 # Import *all* blog posts from the WordPress API
-# Draft posts available with WORDPRESS_USERNAME and WORDPRESS_PASSWORD environment variables.
+# Draft posts available when the WORDPRESS_USERNAME and WORDPRESS_PASSWORD are supplied
+# Read more: https://www.11ty.dev/docs/environment-vars/
 npx @11ty/import wordpress https://blog.fontawesome.com
 
 # Import Atom feed posts

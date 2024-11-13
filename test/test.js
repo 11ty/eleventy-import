@@ -8,7 +8,6 @@ import { Importer } from "../src/Importer.js";
 const require = createRequire(import.meta.url);
 
 test("YouTube user", async (t) => {
-
 	let importer = new Importer();
 
 	importer.setVerbose(false);
@@ -20,7 +19,7 @@ test("YouTube user", async (t) => {
 	importer.addDataOverride("wordpress", "https://www.youtube.com/feeds/videos.xml?channel_id=UCskGTioqrMBcw8pd14_334A", stubContent);
 
 	let entries = await importer.getEntries();
-	assert.ok(entries.length, 15);
+	assert.equal(entries.length, 15);
 
 	let [post] = entries;
 	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "contentType", "date", "dateUpdated", "title", "type", "url", "uuid"]);
