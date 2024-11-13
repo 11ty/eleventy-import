@@ -93,7 +93,15 @@ class Fetcher {
 		this.#directoryManager = manager;
 	}
 
-	async fetchAsset(url, outputFolder) {
+	async fetchAsset(url, outputFolder, contextPageUrl) {
+		// Adds protocol from original page URL if a protocol relative URL
+		if(url.startsWith("//")) {
+			let [protocol] = contextPageUrl.split("://");
+			if(protocol) {
+				url = `${protocol}:${url}`;
+			}
+		}
+
 		// TODO move this upstream as a Fetch `alias` feature.
 		return this.fetch(url, {
 			type: "buffer",
@@ -142,7 +150,7 @@ class Fetcher {
 		}, error => {
 			// Logging the error happens in .fetch() upstream
 			// Fetching the asset failed but we don’t want to fail the upstream document promise
-			return "";
+			return url;
 		});
 	}
 
@@ -187,10 +195,12 @@ class Fetcher {
 
 			return result;
 		}, error => {
-			this.errors.add(url);
+			if(!this.errors.has(url)) {
+				this.errors.add(url);
 
-			if(this.isVerbose && showErrors) {
-				Logger.log(kleur.red(`Error fetching`), url, kleur.red(error.message));
+				if(this.isVerbose && showErrors) {
+					Logger.log(kleur.red(`Error fetching`), url, kleur.red(error.message));
+				}
 			}
 
 			return Promise.reject(error);

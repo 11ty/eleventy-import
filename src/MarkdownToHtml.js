@@ -116,9 +116,11 @@ class MarkdownToHtml {
 	}
 
 	cleanup() {
+		// Removes unnecessarily downloaded <picture> and `srcset` assets that didn’t end up in the markdown simplification
 		for(let asset of this.assetsToKeep) {
 			this.assetsToDelete.delete(asset);
 		}
+
 		for(let asset of this.assetsToDelete) {
 			let assetLocation = path.join(this.#outputFolder, asset);
 			if(fs.existsSync(assetLocation)) {

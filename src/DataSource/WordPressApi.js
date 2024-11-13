@@ -34,7 +34,8 @@ class WordPressApi extends DataSource {
 	}
 
 	#getSubtypeUrl(subtype, suffix = "") {
-		return (new URL(`/wp-json/wp/v2/${subtype}/${suffix}`, this.url)).toString();
+		let {pathname} = new URL(this.url);
+		return (new URL(pathname + `wp-json/wp/v2/${subtype}/${suffix}`, this.url)).toString();
 	}
 
 	#getAuthorUrl(id) {

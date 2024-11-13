@@ -193,7 +193,7 @@ class Importer {
 
 		let promises = await Promise.allSettled(entries.map(async entry => {
 			if(Importer.isHtml(entry)) {
-				entry.content = await this.htmlTransformer.transform(entry.content);
+				entry.content = await this.htmlTransformer.transform(entry.content, entry.url);
 
 				if(options.contentType === "markdown") {
 					entry.content = await this.markdownService.toMarkdown(entry.content, entry.url);
@@ -352,7 +352,7 @@ ${entry.content}`
 		content.push(kleur.green("and"));
 		content.push(kleur.green(Logger.plural(counts.assets - counts.cleaned, "asset")));
 		if(counts.cleaned) {
-			content.push(kleur.gray(`(${counts.cleaned} pruned)`));
+			content.push(kleur.gray(`(${counts.cleaned} removed, unused)`));
 		}
 		content.push(kleur.green(`from ${sourcesDisplay}`));
 		content.push(kleur[counts.errors > 0 ? "red" : "gray"](`(${Logger.plural(counts.errors, "error")})`));
