@@ -55,6 +55,9 @@ class Fetcher {
 		this.isVerbose = true;
 		this.dryRun = false;
 		this.safeMode = true;
+		this.counts = {
+			assets: 0,
+		};
 	}
 
 	setVerbose(isVerbose) {
@@ -70,14 +73,8 @@ class Fetcher {
 	}
 
 	getCounts() {
-		let total = this.fetchedUrls.size;
-		let assets = this.writtenAssetFiles.size;
-
 		return {
-			fetches: {
-				data: total - assets,
-				assets,
-			},
+			assets: this.counts.assets,
 			errors: this.errors.size,
 		}
 	}
@@ -107,9 +104,11 @@ class Fetcher {
 		let fullOutputLocation = path.join(outputFolder, assetUrlLocation);
 		let urlValue = `/${assetUrlLocation}`;
 
-		if(!result?.body || this.writtenAssetFiles.has(fullOutputLocation)) {
+		if(this.writtenAssetFiles.has(fullOutputLocation)) {
 			return urlValue;
 		}
+
+		this.writtenAssetFiles.add(fullOutputLocation);
 
 		if(this.safeMode && fs.existsSync(fullOutputLocation)) {
 			if(this.isVerbose) {
@@ -117,8 +116,6 @@ class Fetcher {
 			}
 			return urlValue;
 		}
-
-		this.writtenAssetFiles.add(fullOutputLocation);
 
 		if(this.#directoryManager) {
 			this.#directoryManager.createDirectoryForPath(fullOutputLocation);
@@ -132,6 +129,8 @@ class Fetcher {
 		}
 
 		if(!this.dryRun) {
+			this.counts.assets++;
+
 			fs.writeFileSync(fullOutputLocation, result.body);
 		}
 
@@ -151,7 +150,7 @@ class Fetcher {
 			fetchOptions: {},
 		}, options);
 
-		if(!this.fetchedUrls.has(url)) {
+		if(!this.fetchedUrls.has(url) && this.isVerbose && verbose) {
 			let logAdds = [];
 			if(Boolean(options?.fetchOptions?.headers?.Authorization)) {
 				logAdds.push(kleur.blue("Auth"));
@@ -159,11 +158,11 @@ class Fetcher {
 			if(opts.duration) {
 				logAdds.push(kleur.green(`(${opts.duration} cache)`));
 			}
-			if(this.isVerbose && verbose) {
-				Logger.log(kleur.gray("Fetching"), url, logAdds.join(" ") );
-			}
-			this.fetchedUrls.add(url);
+
+			Logger.log(kleur.gray("Fetching"), url, logAdds.join(" ") );
 		}
+
+		this.fetchedUrls.add(url);
 
 		if(!opts.fetchOptions.headers) {
 			opts.fetchOptions.headers = {};

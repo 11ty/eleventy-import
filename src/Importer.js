@@ -25,7 +25,9 @@ class Importer {
 		this.isVerbose = true;
 		this.dryRun = false;
 		this.safeMode = true;
-		this.skipCount = 0;
+		this.counts = {
+			files: 0
+		};
 
 		this.markdownService = new MarkdownToHtml();
 		this.htmlTransformer = new HtmlTransformer();
@@ -39,6 +41,8 @@ class Importer {
 
 	setSafeMode(safeMode) {
 		this.safeMode = Boolean(safeMode);
+
+		this.fetcher.setSafeMode(safeMode);
 	}
 
 	setDryRun(isDryRun) {
@@ -60,7 +64,7 @@ class Importer {
 
 	getCounts() {
 		return {
-			skipped: this.skipCount,
+			...this.counts,
 			...this.fetcher.getCounts(),
 		}
 	}
@@ -280,7 +284,6 @@ ${entry.content}`
 					Logger.skipping("post", pathname, entry.url);
 				}
 
-				this.skipCount++;
 				continue;
 			}
 
@@ -288,10 +291,6 @@ ${entry.content}`
 				throw new Error(`Multiple entries attempted to write to the same place: ${pathname} (originally via ${filepathConflicts[pathname]})`);
 			}
 			filepathConflicts[pathname] = entry.url || true;
-
-			if(!this.dryRun) {
-				this.directoryManager.createDirectoryForPath(pathname);
-			}
 
 			if(this.isVerbose) {
 				Logger.importing("post", pathname, entry.url, {
@@ -301,8 +300,13 @@ ${entry.content}`
 			}
 
 			if(!this.dryRun) {
-				fs.writeFileSync(pathname, content, { recursive: true, encoding: "utf8" });
+				this.counts.files++;
+
+				this.directoryManager.createDirectoryForPath(pathname);
+
+				fs.writeFileSync(pathname, content, { encoding: "utf8" });
 			}
+
 			filesWrittenCount++;
 		}
 	}

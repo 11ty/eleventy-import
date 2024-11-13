@@ -109,16 +109,16 @@ let entries = await importer.getEntries({
 importer.toFiles(entries);
 
 // Log results
-let { fetches, errors } = importer.getCounts();
+let counts = importer.getCounts();
 let sourcesDisplay = importer.getSources().map(source => source.constructor.TYPE_FRIENDLY || source.constructor.TYPE).join(", ");
 
 let content = [];
-content.push(kleur.green("Imported"));
-content.push(kleur.green(Logger.plural(entries.length, "document")));
+content.push(kleur.green("Wrote"));
+content.push(kleur.green(Logger.plural(counts.files, "document")));
 content.push(kleur.green("and"));
-content.push(kleur.green(Logger.plural(fetches.assets, "asset")));
+content.push(kleur.green(Logger.plural(counts.assets, "asset")));
 content.push(kleur.green(`from ${sourcesDisplay}`));
-content.push(kleur[errors > 0 ? "red" : "gray"](`(${Logger.plural(errors, "error")})`));
+content.push(kleur[counts.errors > 0 ? "red" : "gray"](`(${Logger.plural(counts.errors, "error")})`));
 content.push(`in ${Logger.time(Date.now() - start)}`);
 
 Logger.log(content.join(" "));
