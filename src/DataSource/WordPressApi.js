@@ -95,17 +95,22 @@ class WordPressApi extends DataSource {
 
 	// stock WordPress is single-author
 	async #getAuthors(authorId) {
-		// Warning: extra API call
-		let authorData = await this.getData(this.#getAuthorUrl(authorId), this.getType());
+		try {
+			// Warning: extra API call
+			let authorData = await this.getData(this.#getAuthorUrl(authorId), this.getType());
 
-		return [
-			{
-				// _wordpress_author_id: entry.author,
-				name: authorData.name,
-				url: authorData.url || authorData.link,
-				avatarUrl: authorData.avatar_urls[Object.keys(authorData.avatar_urls).pop()],
-			}
-		];
+			return [
+				{
+					// _wordpress_author_id: entry.author,
+					name: authorData.name,
+					url: authorData.url || authorData.link,
+					avatarUrl: authorData.avatar_urls[Object.keys(authorData.avatar_urls).pop()],
+				}
+			];
+		} catch(e) {
+			// Fetch logs the error upstream
+			return [];
+		}
 	}
 
 	async #getTags(ids) {
