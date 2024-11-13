@@ -41,12 +41,20 @@ let { positionals, values } = parseArgs({
 		overwrite: {
 			type: "boolean",
 			default: false,
-		}
+		},
+		cacheduration: {
+			type: "string",
+			default: "4h",
+		},
+		format: {
+			type: "string",
+			default: "markdown",
+		},
 	},
 });
 
 let [ type, target ] = positionals;
-let { quiet, dryrun, output, help, version, overwrite } = values;
+let { quiet, dryrun, output, help, version, overwrite, cacheduration, format } = values;
 
 if(version) {
 	const require = createRequire(import.meta.url);
@@ -70,11 +78,17 @@ if(help) {
   # Quietly (limit console output)
   npx @11ty/import [type] [target] --quiet
 
-  # Change the output folder
+  # Change the output folder (default: ".")
   npx @11ty/import [type] [target] --output=dist
 
-	# Allow overwriting existing files
+  # Allow overwriting existing files
   npx @11ty/import [type] [target] --overwrite
+
+  # Change local fetch cache duration (default: 4h)
+  npx @11ty/import [type] [target] --cacheduration=20m
+
+  # Change output format (default: markdown)
+  npx @11ty/import [type] [target] --format=html
 `);
 
 	process.exit();
@@ -83,42 +97,27 @@ if(help) {
 // Input checking
 if(!type || !target) {
 	console.error("Expected usage: npx @11ty/import [type] [target]");
-	// TODO check valid types
+	process.exit(1);
+} else if(format !== "markdown" && format !== "html") {
+	console.error("Invalid --format, expected `markdown` or `html`");
 	process.exit(1);
 }
 
-let start = new Date();
 let importer = new Importer();
 
-importer.setVerbose(!quiet);
-
-// TODO wire these up to CLI
-importer.setCacheDuration("4h");
-importer.setDraftsFolder("drafts");
 importer.setOutputFolder(output);
-
+importer.setCacheDuration(cacheduration);
+importer.setVerbose(!quiet);
+importer.setDraftsFolder("drafts");
 importer.setSafeMode(!overwrite);
 importer.setDryRun(dryrun);
 importer.addSource(type, target);
 
 let entries = await importer.getEntries({
-	// TODO wire this up to CLI
-	contentType: "markdown"
+	contentType: format,
 });
 
 importer.toFiles(entries);
 
-// Log results
-let counts = importer.getCounts();
-let sourcesDisplay = importer.getSources().map(source => source.constructor.TYPE_FRIENDLY || source.constructor.TYPE).join(", ");
+importer.logResults();
 
-let content = [];
-content.push(kleur.green("Wrote"));
-content.push(kleur.green(Logger.plural(counts.files, "document")));
-content.push(kleur.green("and"));
-content.push(kleur.green(Logger.plural(counts.assets, "asset")));
-content.push(kleur.green(`from ${sourcesDisplay}`));
-content.push(kleur[counts.errors > 0 ? "red" : "gray"](`(${Logger.plural(counts.errors, "error")})`));
-content.push(`in ${Logger.time(Date.now() - start)}`);
-
-Logger.log(content.join(" "));

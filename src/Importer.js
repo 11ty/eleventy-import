@@ -1,6 +1,7 @@
 import path from "node:path";
 import fs from "graceful-fs";
 import yaml from "js-yaml";
+import kleur from "kleur";
 
 import { Logger } from "./Logger.js";
 import { Fetcher } from "./Fetcher.js";
@@ -21,6 +22,7 @@ class Importer {
 	#outputFolder = ".";
 
 	constructor() {
+		this.startTime = new Date();
 		this.sources = [];
 		this.isVerbose = true;
 		this.dryRun = false;
@@ -309,6 +311,24 @@ ${entry.content}`
 
 			filesWrittenCount++;
 		}
+	}
+
+	logResults() {
+		let counts = this.getCounts();
+		let sourcesDisplay = this.getSources().map(source => source.constructor.TYPE_FRIENDLY || source.constructor.TYPE).join(", ");
+
+		let content = [];
+		content.push(kleur.green("Wrote"));
+		content.push(kleur.green(Logger.plural(counts.files, "document")));
+		content.push(kleur.green("and"));
+		content.push(kleur.green(Logger.plural(counts.assets, "asset")));
+		content.push(kleur.green(`from ${sourcesDisplay}`));
+		content.push(kleur[counts.errors > 0 ? "red" : "gray"](`(${Logger.plural(counts.errors, "error")})`));
+		if(this.startTime) {
+			content.push(`in ${Logger.time(Date.now() - this.startTime)}`);
+		}
+
+		Logger.log(content.join(" "));
 	}
 }
 
