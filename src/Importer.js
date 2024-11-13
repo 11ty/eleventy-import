@@ -45,6 +45,14 @@ class Importer {
 		this.fetcher.setDirectoryManager(this.directoryManager);
 	}
 
+	getCounts() {
+		return {
+			...this.counts,
+			...this.fetcher.getCounts(),
+			...this.markdownService.getCounts(),
+		}
+	}
+
 	setSafeMode(safeMode) {
 		this.safeMode = Boolean(safeMode);
 
@@ -62,6 +70,7 @@ class Importer {
 		this.isVerbose = Boolean(isVerbose);
 
 		this.fetcher.setVerbose(isVerbose);
+		this.markdownService.setVerbose(isVerbose)
 
 		for(let source of this.sources) {
 			source.setVerbose(isVerbose);
@@ -72,13 +81,6 @@ class Importer {
 		this.fetcher.setAssetsFolder(folder);
 	}
 
-	getCounts() {
-		return {
-			...this.counts,
-			...this.fetcher.getCounts(),
-		}
-	}
-
 	setDraftsFolder(dir) {
 		this.#draftsFolder = dir;
 	}
@@ -86,6 +88,7 @@ class Importer {
 	setOutputFolder(dir) {
 		this.#outputFolder = dir;
 		this.htmlTransformer.setOutputFolder(dir);
+		this.markdownService.setOutputFolder(dir);
 	}
 
 	setCacheDuration(duration) {
@@ -203,6 +206,8 @@ class Importer {
 
 			return entry;
 		}));
+
+		this.markdownService.cleanup();
 
 		return promises.filter(entry => {
 			// Documents with errors
@@ -345,7 +350,10 @@ ${entry.content}`
 		content.push(kleur.green("Wrote"));
 		content.push(kleur.green(Logger.plural(counts.files, "document")));
 		content.push(kleur.green("and"));
-		content.push(kleur.green(Logger.plural(counts.assets, "asset")));
+		content.push(kleur.green(Logger.plural(counts.assets - counts.cleaned, "asset")));
+		if(counts.cleaned) {
+			content.push(kleur.gray(`(${counts.cleaned} pruned)`));
+		}
 		content.push(kleur.green(`from ${sourcesDisplay}`));
 		content.push(kleur[counts.errors > 0 ? "red" : "gray"](`(${Logger.plural(counts.errors, "error")})`));
 		if(this.startTime) {

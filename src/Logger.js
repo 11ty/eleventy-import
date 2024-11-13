@@ -26,7 +26,11 @@ class Logger {
 		}
 
 		let extrasStr = extras.length ? `(${extras.join(", ")}) ` : "";
-		this.log(kleur.gray(`${label} ${type}${prefix}`), local, kleur.gray(`${extrasStr}from`), remote);
+		if(remote) {
+			this.log(kleur.gray(`${label} ${type}${prefix}`), local, kleur.gray(`${extrasStr}from`), remote);
+		} else {
+			this.log(kleur.gray(`${label} ${type}${prefix}`), local, kleur.gray(extrasStr));
+		}
 	}
 
 	static importing(type, local, remote, options = {}) {
@@ -35,6 +39,10 @@ class Logger {
 
 	static skipping(type, local, remote, options = {}) {
 		this._logFsOperation("Skipping", type, local, remote, options);
+	}
+
+	static cleanup(type, local, options = {}) {
+		this._logFsOperation("Cleaning", type, local, undefined, options);
 	}
 
 	// alias for log
