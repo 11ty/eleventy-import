@@ -17,6 +17,7 @@ import { WordPressApi } from "./DataSource/WordPressApi.js";
 import { BlueskyUser } from "./DataSource/BlueskyUser.js";
 import { FediverseUser } from "./DataSource/FediverseUser.js";
 
+// For testing
 const MAX_IMPORT_SIZE = 0;
 
 class Importer {

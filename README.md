@@ -14,14 +14,20 @@ npx @11ty/import [type] [target]
 # Dry run (don’t write files)
 npx @11ty/import [type] [target] --dryrun
 
-# Quietly (limit of console output)
+# Quietly (limit console output)
 npx @11ty/import [type] [target] --quiet
 
-# Change the output folder
+# Change the output folder (default: ".")
 npx @11ty/import [type] [target] --output=dist
 
-# Allow overwriting existing content files
+# Allow overwriting existing files
 npx @11ty/import [type] [target] --overwrite
+
+# Change local fetch cache duration (default: 4h)
+npx @11ty/import [type] [target] --cacheduration=20m
+
+# Change output format (default: markdown)
+npx @11ty/import [type] [target] --format=html
 ```
 
 ### Service Types
