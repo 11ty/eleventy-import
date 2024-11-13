@@ -10,6 +10,7 @@ import { MarkdownToHtml } from "./MarkdownToHtml.js";
 import { HtmlTransformer } from "./HtmlTransformer.js";
 
 // Data Sources
+import { DataSource } from "./DataSource.js";
 import { YouTubeUser } from "./DataSource/YouTubeUser.js";
 import { Atom } from "./DataSource/Atom.js";
 import { Rss } from "./DataSource/Rss.js";
@@ -94,23 +95,29 @@ class Importer {
 	}
 
 	addSource(type, options = {}) {
-		type = type?.toLowerCase();
-
 		let cls;
-		if(type === "youtubeuser") {
-			cls = YouTubeUser;
-		} else if(type === "atom") {
-			cls = Atom;
-		} else if(type === "rss") {
-			cls = Rss;
-		} else if(type === "wordpress") {
-			cls = WordPressApi;
-		} else if(type === "bluesky") {
-			cls = BlueskyUser; // RSS
-		} else if(type === "fediverse") {
-			cls = FediverseUser; // RSS
-		} else {
-			throw new Error(`${type} is not a supported type for addSource()`);
+		if(typeof type === "string") {
+			type = type?.toLowerCase();
+
+			if(type === "youtubeuser") {
+				cls = YouTubeUser;
+			} else if(type === "atom") {
+				cls = Atom;
+			} else if(type === "rss") {
+				cls = Rss;
+			} else if(type === "wordpress") {
+				cls = WordPressApi;
+			} else if(type === "bluesky") {
+				cls = BlueskyUser; // RSS
+			} else if(type === "fediverse") {
+				cls = FediverseUser; // RSS
+			}
+		} else if(typeof type === "function") {
+			cls = type;
+		}
+
+		if(!cls) {
+			throw new Error(`${type} is not a supported type for addSource(). Requires a string type or a DataSource instance.`);
 		}
 
 		let identifier;
@@ -126,6 +133,11 @@ class Importer {
 		}
 
 		let source = new cls(identifier);
+
+		if(!(source instanceof DataSource)) {
+			throw new Error(`${cls?.name} is not a supported type for addSource(). Requires a string type or a DataSource instance.`);
+		}
+
 		source.setFetcher(this.fetcher);
 		source.setVerbose(this.isVerbose);
 

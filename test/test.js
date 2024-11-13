@@ -4,6 +4,7 @@ import fs from "node:fs";
 import { createRequire } from "node:module";
 
 import { Importer } from "../src/Importer.js";
+import { DataSource } from "../src/DataSource.js";
 
 const require = createRequire(import.meta.url);
 
@@ -48,4 +49,48 @@ test("WordPress import", async (t) => {
 	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "contentType", "date", "dateUpdated", "metadata", "status", "title", "type", "url", "uuid"]);
 	assert.equal(post.content.length, 6144);
 	assert.equal(post.authors[0].name, "Matt Johnson");
+});
+
+test("addSource using DataSource instance", async (t) => {
+	let importer = new Importer();
+
+	importer.setVerbose(false);
+	importer.setDryRun(true);
+
+	class MySource extends DataSource {
+		static TYPE = "arbitrary";
+		static TYPE_FRIENDLY = "Arbitrary";
+
+		getData() {
+			return [{ lol: "hi" }];
+		}
+	}
+
+	importer.addSource(MySource);
+
+	let entries = await importer.getEntries();
+	assert.equal(entries.length, 1);
+});
+
+
+test("addSource needs to use DataSource instance", async (t) => {
+	let importer = new Importer();
+
+	importer.setVerbose(false);
+	importer.setDryRun(true);
+
+	assert.throws(() => {
+		class MySource {
+			static TYPE = "arbitrary";
+			static TYPE_FRIENDLY = "Arbitrary";
+
+			getData() {
+				return [];
+			}
+		}
+
+		importer.addSource(MySource);
+	}, {
+		message: "MySource is not a supported type for addSource(). Requires a string type or a DataSource instance."
+	})
 });

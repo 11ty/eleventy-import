@@ -63,6 +63,7 @@ if(version) {
 	process.exit();
 }
 
+// If you modify this, maybe also add the instructions to README.md too?
 if(help) {
 	Logger.log(`Usage:
 

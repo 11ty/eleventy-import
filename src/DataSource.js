@@ -122,48 +122,65 @@ class DataSource {
 		});
 	}
 
-	async #getCleanedEntries(url, showErrors = true) {
-		let entries = [];
-		let data = await this.getData(url, this.getType(), showErrors);
+	async getCleanedEntries(data) {
+		// data should be iterable
+		let dataEntries = data;
+		if(typeof this.getEntriesFromData === "function") {
+			dataEntries = this.getEntriesFromData(data) || [];
+		}
 
-		for(let entry of this.getEntriesFromData(data) || []) {
-			let cleaned = await this.cleanEntry(entry, data);
-			entries.push(cleaned);
+		let entries = [];
+		for(let entry of dataEntries) {
+			if(typeof this.cleanEntry === "function") {
+				let cleaned = await this.cleanEntry(entry, data);
+				entries.push(cleaned);
+			} else {
+				entries.push(entry)
+			}
 		}
 
 		return entries;
 	}
 
 	async getEntries() {
-		let url = this.getUrl();
 		let entries = [];
-		if(typeof url === "function") {
-			let pageNumber = 1;
-			let pagedUrl;
+		if(typeof this.getUrl === "function") {
+			let url = this.getUrl();
+			if(typeof url === "function") {
+				let pageNumber = 1;
+				let pagedUrl;
 
-			try {
-				while(pagedUrl = url(pageNumber)) {
-					let found = 0;
-					for(let entry of await this.#getCleanedEntries(pagedUrl, false)) {
-						entries.push(entry);
-						found++;
+				try {
+					while(pagedUrl = url(pageNumber)) {
+						let found = 0;
+						let data = await this.getData(pagedUrl, this.getType(), false);
+						for(let entry of await this.getCleanedEntries(data)) {
+							entries.push(entry);
+							found++;
+						}
+
+						if(found === 0) {
+							break;
+						}
+
+						pageNumber++;
 					}
-
-					if(found === 0) {
-						break;
+				} catch(e) {
+					let shouldWorry = await this.isErrorWorthWorryingAbout(e);
+					if(shouldWorry) {
+						Logger.error(kleur.red(`Error: ${e.message}`), e);
+						throw e;
 					}
-
-					pageNumber++;
 				}
-			} catch(e) {
-				let shouldWorry = await this.isErrorWorthWorryingAbout(e);
-				if(shouldWorry) {
-					Logger.error(kleur.red(`Error: ${e.message}`), e);
-					throw e;
+			} else if(typeof url === "string" || url instanceof URL) {
+				let data = await this.getData(url, this.getType(), true);
+				for(let entry of await this.getCleanedEntries(data) || []) {
+					entries.push(entry);
 				}
 			}
-		} else if(typeof url === "string" || url instanceof URL) {
-			for(let entry of await this.#getCleanedEntries(url) || []) {
+		} else if(typeof this.getData === "function") {
+			let data = this.getData() || {};
+			for(let entry of await this.getCleanedEntries(data) || []) {
 				entries.push(entry);
 			}
 		}

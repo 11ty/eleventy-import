@@ -2,8 +2,11 @@
 	"name": "@11ty/import",
 	"version": "1.0.0",
 	"description": "Utility to import content from multiple services (and a CLI, too)",
-	"main": "src/Importer.js",
 	"type": "module",
+	"main": "./src/Importer.js",
+	"exports": {
+		"./DataSource": "./src/DataSource.js"
+	},
 	"engines": {
 		"node": ">=18"
 	},
