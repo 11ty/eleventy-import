@@ -1,5 +1,5 @@
 import kleur from "kleur";
-import {filesize} from "filesize";
+import { filesize } from "filesize";
 
 class Logger {
 	static log(...messages) {
@@ -60,16 +60,17 @@ class Logger {
 
 	static time(ms) {
 		if(ms > 1000) {
-			return `${(ms/1000).toFixed(2)}s`;
+			let v = ms/1000;
+			return `${v.toFixed(2)} ${this.plural(v, "second")}`;
 		}
-		return `${ms}ms`;
+		return `${ms} ${this.plural(ms, "millisecond")}`;
 	}
 
 	static plural(num, singular, plural) {
 		if(!plural) {
 			plural = singular + "s";
 		}
-		return `${num} ${num !== 1 ? plural : singular}`;
+		return num !== 1 ? plural : singular;
 	}
 }
 

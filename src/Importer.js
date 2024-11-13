@@ -2,6 +2,7 @@ import path from "node:path";
 import fs from "graceful-fs";
 import yaml from "js-yaml";
 import kleur from "kleur";
+import { createRequire } from "node:module";
 
 import { Logger } from "./Logger.js";
 import { Fetcher } from "./Fetcher.js";
@@ -17,6 +18,11 @@ import { Rss } from "./DataSource/Rss.js";
 import { WordPressApi } from "./DataSource/WordPressApi.js";
 import { BlueskyUser } from "./DataSource/BlueskyUser.js";
 import { FediverseUser } from "./DataSource/FediverseUser.js";
+
+
+const require = createRequire(import.meta.url);
+
+let pkg = require("../package.json");
 
 // For testing
 const MAX_IMPORT_SIZE = 0;
@@ -345,20 +351,21 @@ ${entry.content}`
 	logResults() {
 		let counts = this.getCounts();
 		let sourcesDisplay = this.getSources().map(source => source.constructor.TYPE_FRIENDLY || source.constructor.TYPE).join(", ");
-
 		let content = [];
 		content.push(kleur.green("Wrote"));
-		content.push(kleur.green(Logger.plural(counts.files, "document")));
+		content.push(kleur.green(`${counts.files} ${Logger.plural(counts.files, "document")}`));
 		content.push(kleur.green("and"));
-		content.push(kleur.green(Logger.plural(counts.assets - counts.cleaned, "asset")));
+		content.push(kleur.green(`${counts.assets - counts.cleaned} ${Logger.plural(counts.assets - counts.cleaned, "asset")}`));
 		if(counts.cleaned) {
 			content.push(kleur.gray(`(${counts.cleaned} cleaned, unused)`));
 		}
 		content.push(kleur.green(`from ${sourcesDisplay}`));
-		content.push(kleur[counts.errors > 0 ? "red" : "gray"](`(${Logger.plural(counts.errors, "error")})`));
+		content.push(kleur[counts.errors > 0 ? "red" : "gray"](`(${counts.errors} ${Logger.plural(counts.errors, "error")})`));
 		if(this.startTime) {
 			content.push(`in ${Logger.time(Date.now() - this.startTime)}`);
 		}
+
+		content.push(`(v${pkg.version})`);
 
 		Logger.log(content.join(" "));
 	}
