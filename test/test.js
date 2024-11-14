@@ -110,7 +110,8 @@ test("Persist parseTarget", async (t) => {
 });
 
 test("Persist constructor", async (t) => {
-	assert.throws(() => new Persist("gitlab:11ty/eleventy"), {
+	let p = new Persist();
+	assert.throws(() => p.setTarget("gitlab:11ty/eleventy"), {
 		message: "Invalid persist type: gitlab"
 	});
 });
