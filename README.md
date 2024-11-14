@@ -49,27 +49,49 @@ npx @11ty/import [type] [target] --format=html
 - `wordpress` (blog home page URL)
 - `youtubeuser` (user id)
 
+#### YouTube
+
 ```sh
 # Import recent YouTube Videos for one user
 npx @11ty/import youtubeuser UCskGTioqrMBcw8pd14_334A
+```
 
+#### WordPress
+
+```sh
 # Import *all* posts from the WordPress API
 # Draft posts available when WORDPRESS_USERNAME and WORDPRESS_PASSWORD environment
 # variables are supplied, read more: https://www.11ty.dev/docs/environment-vars/
 npx @11ty/import wordpress https://blog.fontawesome.com
+```
 
+#### Atom Feeds
+
+```sh
 # Import Atom feed posts
 npx @11ty/import atom https://www.11ty.dev/blog/feed.xml
 
 # Import GitHub releases (via Atom)
 npx @11ty/import atom https://github.com/11ty/eleventy/releases.atom
+```
 
+#### RSS Feeds
+
+```sh
 # Import RSS feed posts
 npx @11ty/import rss https://fosstodon.org/users/eleventy.rss
+```
 
-# Import Mastodon posts (via RSS)
+#### Fediverse
+
+```sh
+# Import recent Mastodon posts (via RSS)
 npx @11ty/import fediverse eleventy@fosstodon.org
+```
 
-# Import Bluesky posts (via RSS)
+#### Bluesky
+
+```sh
+# Import recent Bluesky posts (via RSS)
 npx @11ty/import bluesky @11ty.dev
 ```
