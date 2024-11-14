@@ -213,7 +213,9 @@ class Importer {
 			return entry;
 		}));
 
-		this.markdownService.cleanup();
+		if(!this.dryRun) {
+			this.markdownService.cleanup();
+		}
 
 		return promises.filter(entry => {
 			// Documents with errors
@@ -279,38 +281,40 @@ class Importer {
 		return `${pathname}${extension}`;
 	}
 
+	static convertEntryToYaml(entry) {
+		let data = {};
+		data.title = entry.title;
+		data.authors = entry.authors;
+		data.date = entry.date;
+		data.metadata = entry.metadata || {};
+		data.metadata.uuid = entry.uuid;
+		data.metadata.type = entry.type;
+		data.metadata.url = entry.url;
+
+		// Eleventy specific options
+		if(entry.status === "draft") {
+			// Don’t write to file system in Eleventy
+			data.permalink = false;
+			data.draft = true;
+
+			// TODO map metadata.categories and/or metadata.tags to Eleventy `tags`
+		}
+
+		// https://www.npmjs.com/package/js-yaml#dump-object---options-
+		let frontMatter = yaml.dump(data, {
+			// sortKeys: true,
+			noCompatMode: true,
+		});
+
+		return frontMatter;
+	}
+
 	// TODO options.pathPrefix
 	toFiles(entries = []) {
 		let filepathConflicts = {};
 		let filesWrittenCount = 0;
 
 		for(let entry of entries) {
-			let frontMatterData = Object.assign({}, entry);
-
-			if(entry.status === "draft") {
-				// Don’t write to file system in Eleventy
-				frontMatterData.permalink = false;
-				frontMatterData.draft = true;
-			}
-
-			// https://www.npmjs.com/package/js-yaml#dump-object---options-
-			let frontMatter = yaml.dump(frontMatterData, {
-				// sortKeys: true,
-				noCompatMode: true,
-				replacer: function(key, value) {
-					// ignore these keys in front matter
-					if(key === "content" || key === "contentType" || key === "dateUpdated") {
-						return;
-					}
-
-					return value;
-				}
-			});
-
-			let content = `---
-${frontMatter}---
-${entry.content}`
-
 			let pathname = this.getFilePath(entry);
 			if(pathname === false) {
 				continue;
@@ -328,6 +332,11 @@ ${entry.content}`
 				throw new Error(`Multiple entries attempted to write to the same place: ${pathname} (originally via ${filepathConflicts[pathname]})`);
 			}
 			filepathConflicts[pathname] = entry.url || true;
+
+			let frontMatter = Importer.convertEntryToYaml(entry);
+			let content = `---
+${frontMatter}---
+${entry.content}`;
 
 			if(this.isVerbose) {
 				Logger.importing("post", pathname, entry.url, {
