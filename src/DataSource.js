@@ -3,7 +3,7 @@ import kleur from 'kleur';
 import { Logger } from "./Logger.js";
 
 class DataSource {
-	static UUID_PREFIX = "11tyaf";
+	static UUID_PREFIX = "11ty/import";
 
 	#fetcher;
 	#fetchDataOverrides = {};
