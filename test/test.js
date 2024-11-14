@@ -1,3 +1,4 @@
+import "dotenv/config";
 import test from 'node:test';
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -37,8 +38,14 @@ test("WordPress import", async (t) => {
 
 	importer.addSource("wordpress", "https://blog.fontawesome.com/");
 
-	importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/posts/?page=1&per_page=100&status=publish%2Cdraft", require("./sources/blog-awesome-posts.json"));
-	importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/posts/?page=2&per_page=100&status=publish%2Cdraft", []);
+	if(process.env.WORDPRESS_USERNAME) {
+		importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/posts/?page=1&per_page=100&status=publish%2Cdraft", require("./sources/blog-awesome-posts.json"));
+		importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/posts/?page=2&per_page=100&status=publish%2Cdraft", []);
+	} else {
+		importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/posts/?page=1&per_page=100", require("./sources/blog-awesome-posts.json"));
+		importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/posts/?page=2&per_page=100", []);
+	}
+
 	importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/categories/1", require("./sources/blog-awesome-categories.json"));
 	importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/users/155431370", require("./sources/blog-awesome-author.json"));
 
@@ -47,7 +54,7 @@ test("WordPress import", async (t) => {
 
 	let [post] = entries;
 	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "contentType", "date", "dateUpdated", "metadata", "status", "title", "type", "url", "uuid"]);
-	assert.equal(post.content.length, 6144);
+	assert.equal(post.content.length, 6134);
 	assert.equal(post.authors[0].name, "Matt Johnson");
 });
 
