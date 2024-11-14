@@ -22,6 +22,16 @@ const xmlParser = new XMLParser({
 class Fetcher {
 	static USER_AGENT = "Eleventy Import v1.0.0";
 
+	static getContextPathname(url) {
+		if(url) {
+			let u = (new URL(url)).pathname.split("/").filter(entry => Boolean(entry));
+			// pop off the top folder
+			u.pop();
+			return u.join("/");
+		}
+		return "";
+	}
+
 	static getFilenameFromSrc(src, contentType = "") {
 		let {pathname} = new URL(src);
 		let hash = this.createHash(src);
@@ -95,7 +105,7 @@ class Fetcher {
 
 	async fetchAsset(url, outputFolder, contextPageUrl) {
 		// Adds protocol from original page URL if a protocol relative URL
-		if(url.startsWith("//")) {
+		if(url.startsWith("//") && contextPageUrl) {
 			let contextUrl = new URL(contextPageUrl);
 			if(contextUrl.protocol) {
 				url = `${contextUrl.protocol}${url}`;
@@ -111,18 +121,11 @@ class Fetcher {
 			verbose: true,
 			showErrors: true,
 		}).then(result => {
-			let contextPathname = "";
-			if(contextPageUrl) {
-				let u = (new URL(contextPageUrl)).pathname.split("/").filter(entry => Boolean(entry));
-				// pop off the top folder
-				u.pop();
-				contextPathname = u.join("/");
-			}
-
+			let contextPathname = Fetcher.getContextPathname(contextPageUrl);
 			let filename = Fetcher.getFilenameFromSrc(url, result.headers?.["content-type"]);
-			let assetUrlLocation = path.join(contextPathname, this.#assetsFolder, filename);
-			let fullOutputLocation = path.join(outputFolder, assetUrlLocation);
-			let urlValue = `/${assetUrlLocation}`;
+			let assetUrlLocation = path.join(this.#assetsFolder, filename);
+			let fullOutputLocation = path.join(outputFolder, contextPathname, assetUrlLocation);
+			let urlValue = assetUrlLocation;
 
 			if(this.writtenAssetFiles.has(fullOutputLocation)) {
 				return urlValue;
@@ -156,7 +159,7 @@ class Fetcher {
 
 			return urlValue;
 		}, error => {
-			// Logging the error happens in .fetch() upstream
+			// Error logging happens in .fetch() upstream
 			// Fetching the asset failed but we don’t want to fail the upstream document promise
 			return url;
 		});

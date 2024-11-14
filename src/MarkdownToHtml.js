@@ -3,13 +3,13 @@ import fs from "graceful-fs";
 import TurndownService from "turndown";
 
 import { Logger } from "./Logger.js";
+import { Fetcher } from "./Fetcher.js";
 
 const WORDPRESS_TO_PRISM_LANGUAGE_TRANSLATION = {
 	jscript: "js"
 };
 
 class MarkdownToHtml {
-	#turndownService;
 	#outputFolder = ".";
 
 	constructor() {
@@ -33,6 +33,11 @@ class MarkdownToHtml {
 		this.isVerbose = Boolean(isVerbose);
 	}
 
+	recontextifyRelativeAssetPath(assetPath, contextPageUrl) {
+		let contextPathname = Fetcher.getContextPathname(contextPageUrl);
+		return path.join(contextPathname, assetPath);
+	}
+
 	// /small/jpeg/ 375w, /medium/jpeg/ 650w
 	static getSrcsetUrls(srcsetAttr) {
 		return (srcsetAttr || "").split(",").map(entry => {
@@ -52,71 +57,80 @@ class MarkdownToHtml {
 		return Array.from(s);
 	}
 
-	get turndownService() {
-		if(!this.#turndownService) {
-			this.#turndownService = new TurndownService({
-				headingStyle: "atx",
-				bulletListMarker: "-",
-				codeBlockStyle: "fenced",
-				// preformattedCode: true,
-			});
+	getTurndownService(contextPageUrl) {
+		let ts = new TurndownService({
+			headingStyle: "atx",
+			bulletListMarker: "-",
+			codeBlockStyle: "fenced",
+			// preformattedCode: true,
+		});
 
-			this.#turndownService.addRule("pre-without-code-to-fenced-codeblock", {
-				filter: ["pre"],
-				replacement: (content, node) => {
-					let brush = (node.getAttribute("class") || "").split(";").filter(entry => entry.startsWith("brush:"))
-					let language = (brush[0] || ":").split(":")[1].trim();
+		ts.addRule("pre-without-code-to-fenced-codeblock", {
+			filter: ["pre"],
+			replacement: (content, node) => {
+				let brush = (node.getAttribute("class") || "").split(";").filter(entry => entry.startsWith("brush:"))
+				let language = (brush[0] || ":").split(":")[1].trim();
 
-					return `\`\`\`${WORDPRESS_TO_PRISM_LANGUAGE_TRANSLATION[language] || language}
-			${content}
-			\`\`\``;
-				}
-			});
+				return `\`\`\`${WORDPRESS_TO_PRISM_LANGUAGE_TRANSLATION[language] || language}
+		${content}
+		\`\`\``;
+			}
+		});
 
-			// this.#turndownService.addRule("picture-unsupported", {
-			// 	filter: ["picture"],
-			// 	replacement: (content, node) => {
-			// 		Logger.warning( `<picture> node found, but not yet supported in markdown import.` );
-			// 		return "";
-			// 	}
-			// });
+		// ts.addRule("picture-unsupported", {
+		// 	filter: ["picture"],
+		// 	replacement: (content, node) => {
+		// 		Logger.warning( `<picture> node found, but not yet supported in markdown import.` );
+		// 		return "";
+		// 	}
+		// });
 
-			this.#turndownService.addRule("source-cleanup", {
-				filter: ["source"],
-				replacement: (content, node) => {
+		ts.addRule("source-cleanup", {
+			filter: ["source"],
+			replacement: (content, node) => {
+				try {
 					let srcset = node.getAttribute("srcset");
 					if(node.parentNode.localName === "picture" && srcset) {
 						let urls = MarkdownToHtml.getImageSrcUrls(srcset);
 						for(let asset of urls) {
-							this.assetsToDelete.add(asset);
+							this.assetsToDelete.add(this.recontextifyRelativeAssetPath(asset, contextPageUrl));
 						}
 					}
 					return content;
+				} catch(e) {
+					// Otherwise errors get swallowed without feedback by Turndown
+					console.error(e);
 				}
-			});
+			}
+		});
 
-			this.#turndownService.addRule("prefer-highest-resolution-images", {
-				filter: ["img"],
-				replacement: (content, node, options) => {
+		ts.addRule("prefer-highest-resolution-images", {
+			filter: ["img"],
+			replacement: (content, node, options) => {
+				try {
 					// prefer highest-resolution (first) srcset
 					let [src, ...remainingUrls] = MarkdownToHtml.getImageSrcUrls(node.getAttribute("srcset"), node.getAttribute("src"));
 
-					this.assetsToKeep.add(src);
+					this.assetsToKeep.add(this.recontextifyRelativeAssetPath(src, contextPageUrl));
 
 					for(let asset of remainingUrls) {
-						this.assetsToDelete.add(asset);
+						this.assetsToDelete.add(this.recontextifyRelativeAssetPath(asset, contextPageUrl));
 					}
 
 					return `![${node.getAttribute("alt") || ""}](${src})`;
+				} catch(e) {
+					// Otherwise errors get swallowed without feedback by Turndown
+					console.error(e);
 				}
-			});
-		}
+			}
+		});
 
-		return this.#turndownService;
+		return ts;
 	}
 
+	// Removes unnecessarily downloaded <picture> and `srcset` assets that didn’t end up in the markdown simplification
 	cleanup() {
-		// Removes unnecessarily downloaded <picture> and `srcset` assets that didn’t end up in the markdown simplification
+		// Don’t delete assets that are in both Sets
 		for(let asset of this.assetsToKeep) {
 			this.assetsToDelete.delete(asset);
 		}
@@ -135,9 +149,8 @@ class MarkdownToHtml {
 	}
 
 	async toMarkdown(html, viaUrl) {
-		let content = this.turndownService.turndown(html);
-
-		return content;
+		let ts = this.getTurndownService(viaUrl)
+		return ts.turndown(html);
 	}
 }
 
