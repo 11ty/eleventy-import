@@ -43,17 +43,21 @@ let { positionals, values } = parseArgs({
 		},
 		cacheduration: {
 			type: "string",
-			default: "4h",
+			default: "24h",
 		},
 		format: {
 			type: "string",
 			default: "markdown",
 		},
+		persist: {
+			type: "string",
+			default: "",
+		},
 	},
 });
 
 let [ type, target ] = positionals;
-let { quiet, dryrun, output, help, version, overwrite, cacheduration, format } = values;
+let { quiet, dryrun, output, help, version, overwrite, cacheduration, format, persist } = values;
 
 if(version) {
 	const require = createRequire(import.meta.url);
@@ -84,7 +88,7 @@ if(help) {
   # Allow overwriting existing files
   npx @11ty/import [type] [target] --overwrite
 
-  # Change local fetch cache duration (default: 4h)
+  # Change local fetch cache duration (default: 24h)
   npx @11ty/import [type] [target] --cacheduration=20m
 
   # Change output format (default: markdown)
@@ -116,11 +120,15 @@ importer.addSource(type, target);
 importer.setDraftsFolder("drafts");
 importer.setAssetsFolder("assets");
 
+if(persist) {
+	importer.setPersistTarget(persist);
+}
+
 let entries = await importer.getEntries({
 	contentType: format,
 });
 
-importer.toFiles(entries);
+await importer.toFiles(entries);
 
 importer.logResults();
 

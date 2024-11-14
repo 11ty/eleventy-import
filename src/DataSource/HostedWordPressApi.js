@@ -70,10 +70,14 @@ class HostedWordPressApi extends DataSource {
 		};
 
 		let url = this.getUrlFromEntry(entry);
+		let status = this.cleanStatus(entry.status);
 
 		if(entry.featured_image) {
 			// TODO opengraphImage: { width, height, src, mime }
-			metadata.featuredImage = await this.fetcher.fetchAsset(entry.featured_image, this.outputFolder, url);
+			metadata.featuredImage = await this.fetcher.fetchAsset(entry.featured_image, this.outputFolder, {
+				url,
+				status,
+			});
 		}
 
 		return {
@@ -86,7 +90,7 @@ class HostedWordPressApi extends DataSource {
 			dateUpdated: entry.modified,
 			content: entry.content,
 			contentType: "html",
-			status: this.cleanStatus(entry.status),
+			status,
 			metadata,
 		}
 	}

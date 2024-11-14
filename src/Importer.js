@@ -9,6 +9,7 @@ import { Fetcher } from "./Fetcher.js";
 import { DirectoryManager } from "./DirectoryManager.js";
 import { MarkdownToHtml } from "./MarkdownToHtml.js";
 import { HtmlTransformer } from "./HtmlTransformer.js";
+import { Persist } from "./Persist.js";
 
 // Data Sources
 import { DataSource } from "./DataSource.js";
@@ -21,8 +22,7 @@ import { FediverseUser } from "./DataSource/FediverseUser.js";
 
 
 const require = createRequire(import.meta.url);
-
-let pkg = require("../package.json");
+const pkg = require("../package.json");
 
 // For testing
 const MAX_IMPORT_SIZE = 0;
@@ -44,11 +44,13 @@ class Importer {
 		this.markdownService = new MarkdownToHtml();
 		this.htmlTransformer = new HtmlTransformer();
 		this.directoryManager = new DirectoryManager();
+		this.persistManager = new Persist();
 		this.fetcher = new Fetcher();
 
 		this.htmlTransformer.setFetcher(this.fetcher);
 
 		this.fetcher.setDirectoryManager(this.directoryManager);
+		this.fetcher.setPersistManager(this.persistManager);
 	}
 
 	getCounts() {
@@ -56,6 +58,7 @@ class Importer {
 			...this.counts,
 			...this.fetcher.getCounts(),
 			...this.markdownService.getCounts(),
+			...this.persistManager.getCounts()
 		}
 	}
 
@@ -70,13 +73,15 @@ class Importer {
 
 		this.fetcher.setDryRun(isDryRun);
 		this.directoryManager.setDryRun(isDryRun);
+		this.persistManager.setDryRun(isDryRun);
 	}
 
 	setVerbose(isVerbose) {
 		this.isVerbose = Boolean(isVerbose);
 
 		this.fetcher.setVerbose(isVerbose);
-		this.markdownService.setVerbose(isVerbose)
+		this.markdownService.setVerbose(isVerbose);
+		this.persistManager.setVerbose(isVerbose);
 
 		for(let source of this.sources) {
 			source.setVerbose(isVerbose);
@@ -101,6 +106,10 @@ class Importer {
 		if(duration) {
 			this.fetcher.setCacheDuration(duration);
 		}
+	}
+
+	setPersistTarget(persistTarget) {
+		this.persistManager.setTarget(persistTarget);
 	}
 
 	addSource(type, options = {}) {
@@ -199,7 +208,7 @@ class Importer {
 
 		let promises = await Promise.allSettled(entries.map(async entry => {
 			if(Importer.isHtml(entry)) {
-				entry.content = await this.htmlTransformer.transform(entry.content, entry.url);
+				entry.content = await this.htmlTransformer.transform(entry.content, entry);
 
 				if(options.contentType === "markdown") {
 					entry.content = await this.markdownService.toMarkdown(entry.content, entry.url);
@@ -310,21 +319,12 @@ class Importer {
 	}
 
 	// TODO options.pathPrefix
-	toFiles(entries = []) {
+	async toFiles(entries = []) {
 		let filepathConflicts = {};
-		let filesWrittenCount = 0;
 
 		for(let entry of entries) {
 			let pathname = this.getFilePath(entry);
 			if(pathname === false) {
-				continue;
-			}
-
-			if(this.safeMode && fs.existsSync(pathname)) {
-				if(this.isVerbose) {
-					Logger.skipping("post", pathname, entry.url);
-				}
-
 				continue;
 			}
 
@@ -337,6 +337,15 @@ class Importer {
 			let content = `---
 ${frontMatter}---
 ${entry.content}`;
+
+			// File system operations
+			// TODO use https://www.npmjs.com/package/diff to compare file contents and skip
+			if(this.safeMode && fs.existsSync(pathname)) {
+				if(this.isVerbose) {
+					Logger.skipping("post", pathname, entry.url);
+				}
+				continue;
+			}
 
 			if(this.isVerbose) {
 				Logger.importing("post", pathname, entry.url, {
@@ -353,7 +362,14 @@ ${entry.content}`;
 				fs.writeFileSync(pathname, content, { encoding: "utf8" });
 			}
 
-			filesWrittenCount++;
+			// Happens independent of file system (--dryrun or --overwrite)
+			// Don’t persist if post is a draft
+			if(entry.status !== "draft" && this.persistManager.canPersist()) {
+				await this.persistManager.persistFile(pathname, content, {
+					url: entry.url,
+					type: "post",
+				});
+			}
 		}
 	}
 
@@ -369,6 +385,9 @@ ${entry.content}`;
 			content.push(kleur.gray(`(${counts.cleaned} cleaned, unused)`));
 		}
 		content.push(kleur.green(`from ${sourcesDisplay}`));
+		if(counts.persist) {
+			content.push(kleur.blue(`(${counts.persist} persisted)`));
+		}
 		content.push(kleur[counts.errors > 0 ? "red" : "gray"](`(${counts.errors} ${Logger.plural(counts.errors, "error")})`));
 		if(this.startTime) {
 			content.push(`in ${Logger.time(Date.now() - this.startTime)}`);

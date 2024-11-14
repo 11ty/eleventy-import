@@ -33,11 +33,14 @@ npx @11ty/import [type] [target] --output=dist
 # Allow overwriting existing files
 npx @11ty/import [type] [target] --overwrite
 
-# Change local fetch cache duration (default: 4h)
+# Change local fetch cache duration (default: 24h)
 npx @11ty/import [type] [target] --cacheduration=20m
 
 # Change output format (default: markdown)
 npx @11ty/import [type] [target] --format=html
+
+# Persist new content
+npx @11ty/import [type] [target] --persist=github:zachleat/wp-awesome
 ```
 
 ### Service Types

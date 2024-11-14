@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 
 import { Importer } from "../src/Importer.js";
 import { DataSource } from "../src/DataSource.js";
+import { Persist } from "../src/Persist.js";
 
 const require = createRequire(import.meta.url);
 
@@ -79,7 +80,6 @@ test("addSource using DataSource", async (t) => {
 	assert.equal(entries.length, 1);
 });
 
-
 test("addSource needs to use DataSource", async (t) => {
 	let importer = new Importer();
 
@@ -91,4 +91,26 @@ test("addSource needs to use DataSource", async (t) => {
 	}, {
 		message: "MySource is not a supported type for addSource(). Requires a string type or a DataSource class."
 	})
+});
+
+test("Persist parseTarget", async (t) => {
+	assert.deepEqual(Persist.parseTarget("github:11ty/eleventy"), {
+		type: "github",
+		username: "11ty",
+		repository: "eleventy",
+		branch: undefined,
+	});
+
+	assert.deepEqual(Persist.parseTarget("github:11ty/eleventy#main"), {
+		type: "github",
+		username: "11ty",
+		repository: "eleventy",
+		branch: "main",
+	});
+});
+
+test("Persist constructor", async (t) => {
+	assert.throws(() => new Persist("gitlab:11ty/eleventy"), {
+		message: "Invalid persist type: gitlab"
+	});
 });

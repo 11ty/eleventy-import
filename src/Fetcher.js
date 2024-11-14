@@ -59,6 +59,7 @@ class Fetcher {
 	#cacheDuration = "0s";
 	#directoryManager;
 	#assetsFolder = "assets";
+	#persistManager;
 
 	constructor() {
 		this.fetchedUrls = new Set();
@@ -103,10 +104,14 @@ class Fetcher {
 		this.#directoryManager = manager;
 	}
 
-	async fetchAsset(url, outputFolder, contextPageUrl) {
+	setPersistManager(manager) {
+		this.#persistManager = manager;
+	}
+
+	async fetchAsset(url, outputFolder, contextEntry) {
 		// Adds protocol from original page URL if a protocol relative URL
-		if(url.startsWith("//") && contextPageUrl) {
-			let contextUrl = new URL(contextPageUrl);
+		if(url.startsWith("//") && contextEntry.url) {
+			let contextUrl = new URL(contextEntry.url);
 			if(contextUrl.protocol) {
 				url = `${contextUrl.protocol}${url}`;
 			}
@@ -121,7 +126,7 @@ class Fetcher {
 			verbose: true,
 			showErrors: true,
 		}).then(result => {
-			let contextPathname = Fetcher.getContextPathname(contextPageUrl);
+			let contextPathname = Fetcher.getContextPathname(contextEntry.url);
 			let filename = Fetcher.getFilenameFromSrc(url, result.headers?.["content-type"]);
 			let assetUrlLocation = path.join(this.#assetsFolder, filename);
 			let fullOutputLocation = path.join(outputFolder, contextPathname, assetUrlLocation);
@@ -133,6 +138,7 @@ class Fetcher {
 
 			this.writtenAssetFiles.add(fullOutputLocation);
 
+			// TODO compare file contents and skip
 			if(this.safeMode && fs.existsSync(fullOutputLocation)) {
 				if(this.isVerbose) {
 					Logger.skipping("asset", fullOutputLocation, url);
@@ -155,6 +161,14 @@ class Fetcher {
 				this.counts.assets++;
 
 				fs.writeFileSync(fullOutputLocation, result.body);
+			}
+
+			// Don’t persist assets if upstream post is a draft
+			if(contextEntry.status !== "draft" && this.#persistManager.canPersist()) {
+				this.#persistManager.persistFile(fullOutputLocation, result.body, {
+					url,
+					type: "asset",
+				});
 			}
 
 			return urlValue;

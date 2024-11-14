@@ -139,10 +139,14 @@ class WordPressApi extends DataSource {
 	// Supports: Title, Author, Published/Updated Dates
 	async cleanEntry(entry, data) {
 		let url = this.getUrlFromEntry(entry);
+		let status = this.cleanStatus(entry.status)
 
 		let metadata = {};
 		if(entry.jetpack_featured_media_url) {
-			metadata.featuredImage = await this.fetcher.fetchAsset(entry.jetpack_featured_media_url, this.outputFolder, url);
+			metadata.featuredImage = await this.fetcher.fetchAsset(entry.jetpack_featured_media_url, this.outputFolder, {
+				url,
+				status
+			});
 		}
 
 		let categories = await this.#getCategories(entry.categories);
@@ -165,7 +169,7 @@ class WordPressApi extends DataSource {
 			dateUpdated: entry.modified_gmt,
 			content: entry.content.rendered,
 			contentType: "html",
-			status: this.cleanStatus(entry.status),
+			status,
 			metadata,
 		};
 
