@@ -2,3 +2,5 @@ test
 .github
 .cache
 .env
+.editorconfig
+dist*

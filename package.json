@@ -43,7 +43,6 @@
 		"js-yaml": "^4.1.0",
 		"kleur": "^4.1.5",
 		"posthtml": "^0.16.6",
-		"posthtml-urls": "^1.0.0",
 		"turndown": "^7.2.0"
 	}
 }
