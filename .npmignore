@@ -1,3 +1,4 @@
 test
 .github
-sample
+.cache
+.env
