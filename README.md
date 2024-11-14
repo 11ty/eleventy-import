@@ -39,7 +39,8 @@ npx @11ty/import [type] [target] --cacheduration=20m
 # Change output format (default: markdown)
 npx @11ty/import [type] [target] --format=html
 
-# Persist new content
+# EXPERIMENTAL: Persist *new* non-draft content
+# - `github` persist type requires a `GITHUB_TOKEN` environment variable.
 npx @11ty/import [type] [target] --persist=github:zachleat/wp-awesome
 ```
 
