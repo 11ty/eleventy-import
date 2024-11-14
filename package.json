@@ -11,7 +11,7 @@
 		"node": ">=18"
 	},
 	"bin": {
-		"@11ty/import": "cli.js"
+		"eleventy-import": "cli.js"
 	},
 	"scripts": {
 		"test": "node --test",
