@@ -4,9 +4,9 @@ A small utility (and CLI) to import content files from various content sources. 
 
 ## Features
 
-- Converts imported content as markdown files in your repository. Option to use HTML.
-- Downloads all referenced assets (images, videos, stylesheets, scripts, etc) in content and co-locates the assets with the content.
-- Works with a bunch of different data sources (see below).
+- **Compatible**: Works with a bunch of different data sources (see below) and more to come.
+- **Clean**: Converts imported content to markdown files in your repository (`--format=html` to use raw HTML).
+- **Standalone**: downloads all referenced assets (images, videos, stylesheets, scripts, etc) in content and co-locates assets with the content.
 - **Resumable**: Can stop and resume a large import later, reusing a local cache (with configurable cache duration)
 - **Repeatable**: avoids overwriting existing content files (unless you opt-in with `--overwrite`).
 	- This allows you to continue using an import source for new content while editing the already imported content.
