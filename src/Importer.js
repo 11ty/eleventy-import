@@ -1,8 +1,9 @@
 import path from "node:path";
+import { createRequire } from "node:module";
 import fs from "graceful-fs";
 import yaml from "js-yaml";
 import kleur from "kleur";
-import { createRequire } from "node:module";
+import slugify from '@sindresorhus/slugify';
 
 import { Logger } from "./Logger.js";
 import { Fetcher } from "./Fetcher.js";
@@ -307,6 +308,15 @@ class Importer {
 			data.draft = true;
 
 			// TODO map metadata.categories and/or metadata.tags to Eleventy `tags`
+		}
+
+		if(entry.tags) {
+			if(!Array.isArray(entry.tags)) {
+				entry.tags = [entry.tags];
+			}
+
+			// slugify the tags
+			data.tags = entry.tags.map(tag => slugify(tag));
 		}
 
 		// https://www.npmjs.com/package/js-yaml#dump-object---options-

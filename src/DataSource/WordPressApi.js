@@ -173,6 +173,11 @@ class WordPressApi extends DataSource {
 			metadata,
 		};
 
+		if(metadata.categories) {
+			// map WordPress categories for use in Eleventy tags (not WordPress metadata tags, which are different)
+			obj.tags = metadata.categories;
+		}
+
 		if(entry.og_image) {
 			obj.metadata.opengraphImage = {
 				width: entry.og_image?.width,

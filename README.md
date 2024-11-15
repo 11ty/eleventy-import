@@ -8,7 +8,7 @@ A small utility (and CLI) to import content files from various content sources. 
 - Downloads all referenced assets (images, videos, stylesheets, scripts, etc) in content and co-locates the assets with the content.
 - Works with a bunch of different data sources (see below).
 - **Resumable**: Can stop and resume a large import later, reusing a local cache (with configurable cache duration)
-- **Safe**: avoids overwriting existing files by default (unless you opt-in with `--overwrite`).
+- **Repeatable**: avoids overwriting existing content files (unless you opt-in with `--overwrite`).
 	- This allows you to continue using an import source for new content while editing the already imported content.
 	- Use `--dryrun` for testing without writing any files.
 
