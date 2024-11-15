@@ -109,8 +109,19 @@ test("Persist parseTarget", async (t) => {
 	});
 });
 
-test("Persist constructor", async (t) => {
+test("Persist constructor (no token)", async (t) => {
 	let p = new Persist();
+
+	assert.throws(() => p.setTarget("gitlab:11ty/eleventy"), {
+		// message: "Invalid persist type: gitlab"
+		message: "Missing GITHUB_TOKEN environment variable."
+	});
+});
+
+test("Persist constructor (gitlab)", async (t) => {
+	let p = new Persist();
+	process.env.GITHUB_TOKEN = "FAKE_TOKEN";
+
 	assert.throws(() => p.setTarget("gitlab:11ty/eleventy"), {
 		message: "Invalid persist type: gitlab"
 	});
