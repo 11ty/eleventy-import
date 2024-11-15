@@ -101,3 +101,30 @@ npx @11ty/import fediverse eleventy@fosstodon.org
 # Import recent Bluesky posts (via RSS)
 npx @11ty/import bluesky @11ty.dev
 ```
+
+### Programmatic API
+
+```js
+import { Importer } from "@11ty/import";
+
+let importer = new Importer();
+
+importer.setOutputFolder("."); // --output
+importer.setCacheDuration("24h"); // --cacheduration
+importer.setVerbose(true); // --quiet
+importer.setSafeMode(false); // --overwrite
+importer.setDryRun(false); // --dryrun
+importer.setDraftsFolder("drafts");
+importer.setAssetsFolder("assets");
+
+// Sources (one or more)
+importer.addSource("bluesky", "@11ty.dev");
+
+let entries = await importer.getEntries({
+	contentType: "markdown", // --format
+});
+
+await importer.toFiles(entries);
+
+importer.logResults();
+```
