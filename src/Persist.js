@@ -49,6 +49,11 @@ class Persist {
 	}
 
 	setTarget(target) {
+		// Must have a token to use this feature
+		if(!process.env.GITHUB_TOKEN) {
+			throw new Error("Missing GITHUB_TOKEN environment variable.");
+		}
+
 		let { type, username, repository, branch } = Persist.parseTarget(target);
 		if(!Persist.SUPPORTED_TYPES.includes(type)) {
 			throw new Error("Invalid persist type: " + type);
@@ -61,10 +66,6 @@ class Persist {
 	}
 
 	get publisher() {
-		if(!process.env.GITHUB_TOKEN) {
-			throw new Error("Missing GITHUB_TOKEN environment variable.");
-		}
-
 		if(!this.canPersist()) {
 			throw new Error("Missing Persist target. Have you called setTarget()?");
 		}
