@@ -17,7 +17,7 @@ A small utility (and CLI) to import content files from various content sources. 
 
 ## Usage
 
-Published to [npm](https://www.npmjs.com/package/@11ty/import).
+Published to [npm](https://www.npmjs.com/package/@11ty/import). These commands do not require separate installation.
 
 ```sh
 npx @11ty/import --help
@@ -106,6 +106,8 @@ npx @11ty/import bluesky @11ty.dev
 ```
 
 ### Programmatic API
+
+Don’t forget to install this into your project: `npm install @11ty/import`
 
 ```js
 import { Importer } from "@11ty/import";
