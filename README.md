@@ -14,6 +14,8 @@ A small utility (and CLI) to import content files from various content sources. 
 
 ## Usage
 
+Published to [npm](https://www.npmjs.com/package/@11ty/import).
+
 ```sh
 npx @11ty/import --help
 npx @11ty/import --version
