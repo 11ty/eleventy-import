@@ -5,6 +5,9 @@ A small utility (and CLI) to import content files from various content sources. 
 ## Features
 
 - **Compatible**: Works with a bunch of different data sources (see below) and more to come.
+	- Export your entire WordPress site statically in a single command.
+	- Show recent Bluesky or Mastodon posts on your own web site without an expensive third party embed component.
+	- Make anything on the web into a CMS for your web site using [Indieweb PESOS](https://indieweb.org/PESOS).
 - **Clean**: Converts imported content to markdown files in your repository (`--format=html` to use raw HTML).
 - **Standalone**: downloads all referenced assets (images, videos, stylesheets, scripts, etc) in content and co-locates assets with the content.
 - **Resumable**: Can stop and resume a large import later, reusing a local cache (with configurable cache duration)
