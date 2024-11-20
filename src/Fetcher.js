@@ -1,4 +1,3 @@
-import path from "node:path";
 import fs from "graceful-fs";
 import { createHash } from "node:crypto";
 import kleur from "kleur";
@@ -7,6 +6,7 @@ import { XMLParser } from "fast-xml-parser";
 import EleventyFetch from "@11ty/eleventy-fetch";
 import { DirectoryManager } from "./DirectoryManager.js";
 import { Logger } from "./Logger.js";
+import { Utils } from "./Utils.js";
 
 // 255 total (hash + url + extension)
 const HASH_FILENAME_MAXLENGTH = 12;
@@ -121,13 +121,13 @@ class Fetcher {
 
 	getAssetLocation(assetUrl, assetContentType, contextEntry) {
 		let filename = Fetcher.getFilenameFromSrc(assetUrl, assetContentType);
-		let assetUrlLocation = path.join(this.#assetsFolder, filename);
+		let assetUrlLocation = Utils.pathJoin(this.#assetsFolder, filename);
 
 		// root /assets folder
 		if(!this.useRelativeAssets) {
 			return {
 				url: `/${assetUrlLocation}`,
-				filePath: path.join(this.#outputFolder, assetUrlLocation),
+				filePath: Utils.pathJoin(this.#outputFolder, assetUrlLocation),
 			};
 		}
 
@@ -141,7 +141,7 @@ class Fetcher {
 
 		return {
 			url: assetUrlLocation,
-			filePath: path.join(contextPathname, assetUrlLocation),
+			filePath: Utils.pathJoin(contextPathname, assetUrlLocation),
 		}
 	}
 
