@@ -15,7 +15,8 @@
 	},
 	"scripts": {
 		"test": "node --test",
-		"demo": "node ."
+		"demo": "node .",
+		"prepare": "husky"
 	},
 	"publishConfig": {
 		"access": "public"
@@ -45,5 +46,8 @@
 		"kleur": "^4.1.5",
 		"posthtml": "^0.16.6",
 		"turndown": "^7.2.0"
+	},
+	"devDependencies": {
+		"husky": "^9.1.7"
 	}
 }
