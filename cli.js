@@ -53,11 +53,15 @@ let { positionals, values } = parseArgs({
 			type: "string",
 			default: "",
 		},
+		assetrefs: {
+			type: "string",
+			default: "relative",
+		},
 	},
 });
 
 let [ type, target ] = positionals;
-let { quiet, dryrun, output, help, version, overwrite, cacheduration, format, persist } = values;
+let { quiet, dryrun, output, help, version, overwrite, cacheduration, format, persist, assetrefs } = values;
 
 if(version) {
 	const require = createRequire(import.meta.url);
@@ -93,6 +97,9 @@ if(help) {
 
   # Change output format (default: markdown)
   npx @11ty/import [type] [target] --format=html
+
+  # Use absolute asset URLs (default: relative)
+  npx @11ty/import [type] [target] --assetrefs=absolute
 `);
 
 	process.exit();
@@ -119,6 +126,7 @@ importer.addSource(type, target);
 // TODO wire these up to CLI
 importer.setDraftsFolder("drafts");
 importer.setAssetsFolder("assets");
+importer.setAssetReferenceType(assetrefs);
 
 if(persist) {
 	importer.setPersistTarget(persist);

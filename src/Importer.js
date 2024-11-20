@@ -92,13 +92,23 @@ class Importer {
 		this.fetcher.setAssetsFolder(folder);
 	}
 
+	setAssetReferenceType(refType) {
+		if(refType === "absolute") {
+			this.fetcher.setUseRelativeAssetPaths(false);
+		} else if(refType === "relative") {
+			this.fetcher.setUseRelativeAssetPaths(true);
+		} else {
+			throw new Error(`Invalid value for --assetrefs, must be \`relative\` or \`absolute\`. Received: ${refType} (${typeof refType})`);
+		}
+	}
+
 	setDraftsFolder(dir) {
 		this.#draftsFolder = dir;
 	}
 
 	setOutputFolder(dir) {
 		this.#outputFolder = dir;
-		this.htmlTransformer.setOutputFolder(dir);
+		this.fetcher.setOutputFolder(dir);
 		this.markdownService.setOutputFolder(dir);
 	}
 

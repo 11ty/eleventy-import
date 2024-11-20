@@ -61,6 +61,7 @@ class Fetcher {
 	#directoryManager;
 	#assetsFolder = "assets";
 	#persistManager;
+	#outputFolder = ".";
 
 	constructor() {
 		this.fetchedUrls = new Set();
@@ -69,6 +70,7 @@ class Fetcher {
 		this.isVerbose = true;
 		this.dryRun = false;
 		this.safeMode = true;
+		this.useRelativeAssets = true;
 		this.counts = {
 			assets: 0,
 		};
@@ -90,6 +92,14 @@ class Fetcher {
 		this.#assetsFolder = folder;
 	}
 
+	setUseRelativeAssetPaths(use) {
+		this.useRelativeAssets = Boolean(use);
+	}
+
+	setOutputFolder(dir) {
+		this.#outputFolder = dir;
+	}
+
 	getCounts() {
 		return {
 			assets: this.counts.assets,
@@ -109,17 +119,43 @@ class Fetcher {
 		this.#persistManager = manager;
 	}
 
-	async fetchAsset(url, contextEntry) {
+	getAssetLocation(assetUrl, assetContentType, contextEntry) {
+		let filename = Fetcher.getFilenameFromSrc(assetUrl, assetContentType);
+		let assetUrlLocation = path.join(this.#assetsFolder, filename);
+
+		// root /assets folder
+		if(!this.useRelativeAssets) {
+			return {
+				url: `/${assetUrlLocation}`,
+				filePath: path.join(this.#outputFolder, assetUrlLocation),
+			};
+		}
+
+		let contextPathname;
+		if(contextEntry.filePath) {
+			contextPathname = DirectoryManager.getDirectory(contextEntry.filePath);
+		} else {
+			// backwards compatibility
+			contextPathname = Fetcher.getContextPathname(contextEntry.url);
+		}
+
+		return {
+			url: assetUrlLocation,
+			filePath: path.join(contextPathname, assetUrlLocation),
+		}
+	}
+
+	async fetchAsset(assetUrl, contextEntry) {
 		// Adds protocol from original page URL if a protocol relative URL
-		if(url.startsWith("//") && contextEntry.url) {
+		if(assetUrl.startsWith("//") && contextEntry.url) {
 			let contextUrl = new URL(contextEntry.url);
 			if(contextUrl.protocol) {
-				url = `${contextUrl.protocol}${url}`;
+				assetUrl = `${contextUrl.protocol}${assetUrl}`;
 			}
 		}
 
 		// TODO move this upstream as a Fetch `alias` feature.
-		return this.fetch(url, {
+		return this.fetch(assetUrl, {
 			type: "buffer",
 			returnType: "response",
 		},
@@ -127,16 +163,7 @@ class Fetcher {
 			verbose: true,
 			showErrors: true,
 		}).then(result => {
-			let contextPathname;
-			if(contextEntry.filePath) {
-				contextPathname = DirectoryManager.getDirectory(contextEntry.filePath);
-			} else {
-				contextPathname = Fetcher.getContextPathname(contextEntry.url);
-			}
-			let filename = Fetcher.getFilenameFromSrc(url, result.headers?.["content-type"]);
-			let assetUrlLocation = path.join(this.#assetsFolder, filename);
-			let fullOutputLocation = path.join(contextPathname, assetUrlLocation);
-			let urlValue = assetUrlLocation;
+			let { url: urlValue, filePath: fullOutputLocation } = this.getAssetLocation(assetUrl, result.headers?.["content-type"], contextEntry);
 
 			if(this.writtenAssetFiles.has(fullOutputLocation)) {
 				return urlValue;
@@ -147,7 +174,7 @@ class Fetcher {
 			// TODO compare file contents and skip
 			if(this.safeMode && fs.existsSync(fullOutputLocation)) {
 				if(this.isVerbose) {
-					Logger.skipping("asset", fullOutputLocation, url);
+					Logger.skipping("asset", fullOutputLocation, assetUrl);
 				}
 				return urlValue;
 			}
@@ -157,7 +184,7 @@ class Fetcher {
 			}
 
 			if(this.isVerbose) {
-				Logger.importing("asset", fullOutputLocation, url, {
+				Logger.importing("asset", fullOutputLocation, assetUrl, {
 					size: result.body.length,
 					dryRun: this.dryRun
 				});
@@ -172,7 +199,7 @@ class Fetcher {
 			// Don’t persist assets if upstream post is a draft
 			if(contextEntry.status !== "draft" && this.#persistManager.canPersist()) {
 				this.#persistManager.persistFile(fullOutputLocation, result.body, {
-					url,
+					assetUrl,
 					type: "asset",
 				});
 			}
@@ -181,7 +208,7 @@ class Fetcher {
 		}, error => {
 			// Error logging happens in .fetch() upstream
 			// Fetching the asset failed but we don’t want to fail the upstream document promise
-			return url;
+			return assetUrl;
 		});
 	}
 

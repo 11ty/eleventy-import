@@ -7,6 +7,7 @@ import { createRequire } from "node:module";
 import { Importer } from "../src/Importer.js";
 import { DataSource } from "../src/DataSource.js";
 import { Persist } from "../src/Persist.js";
+import { Fetcher } from "../src/Fetcher.js";
 
 const require = createRequire(import.meta.url);
 
@@ -127,5 +128,38 @@ test("Persist constructor (gitlab)", async (t) => {
 
 	assert.throws(() => p.setTarget("gitlab:11ty/eleventy"), {
 		message: "Invalid persist type: gitlab"
+	});
+});
+
+test("Fetcher asset location tests (relative)", async (t) => {
+	let f = new Fetcher();
+
+	let relative1 = f.getAssetLocation("https://example.com/test.png", "image/png", { filePath: "/test.html" });
+	assert.deepEqual(relative1, {
+		filePath: "assets/test-NzhbK6MSYu2g.png",
+		url: "assets/test-NzhbK6MSYu2g.png",
+	});
+
+	let relativeNoExt = f.getAssetLocation("https://example.com/test", "image/png", { filePath: "/test.html" });
+	assert.deepEqual(relativeNoExt, {
+		filePath: "assets/test-m4HI5oTdgEt4.png",
+		url: "assets/test-m4HI5oTdgEt4.png",
+	});
+
+	let relative2 = f.getAssetLocation("https://example.com/subdir/test.png", "image/png", { filePath: "localsubdirectory/test.html" });
+	assert.deepEqual(relative2, {
+		filePath: "localsubdirectory/assets/test-slaK8pecO8QR.png",
+		url: "assets/test-slaK8pecO8QR.png",
+	});
+});
+
+test("Fetcher asset location tests (absolute)", async (t) => {
+	let f = new Fetcher();
+	f.setUseRelativeAssetPaths(false);
+
+	let abs1 = f.getAssetLocation("https://example.com/test.png", "image/png");
+	assert.deepEqual(abs1, {
+		filePath: "assets/test-NzhbK6MSYu2g.png",
+		url: "/assets/test-NzhbK6MSYu2g.png",
 	});
 });

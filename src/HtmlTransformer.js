@@ -2,15 +2,10 @@ import posthtml from "posthtml";
 import urls from "@11ty/posthtml-urls";
 
 class HtmlTransformer {
-	#outputFolder = ".";
 	#fetcher;
 
 	setFetcher(fetcher) {
 		this.#fetcher = fetcher;
-	}
-
-	setOutputFolder(dir) {
-		this.#outputFolder = dir;
 	}
 
 	async transform(content, entry) {

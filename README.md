@@ -44,6 +44,9 @@ npx @11ty/import [type] [target] --cacheduration=20m
 # Change output format (default: markdown)
 npx @11ty/import [type] [target] --format=html
 
+# Use absolute asset URLs (default: relative)
+npx @11ty/import [type] [target] --assetrefs=absolute
+
 # EXPERIMENTAL: Persist *new* non-draft content
 # - `github` persist type requires a `GITHUB_TOKEN` environment variable.
 npx @11ty/import [type] [target] --persist=github:zachleat/wp-awesome
@@ -121,6 +124,7 @@ importer.setSafeMode(false); // --overwrite
 importer.setDryRun(false); // --dryrun
 importer.setDraftsFolder("drafts");
 importer.setAssetsFolder("assets");
+importer.setAssetReferenceType("relative"); // --assetrefs
 
 // Sources (one or more)
 importer.addSource("bluesky", "@11ty.dev");
