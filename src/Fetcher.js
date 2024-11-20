@@ -127,7 +127,12 @@ class Fetcher {
 			verbose: true,
 			showErrors: true,
 		}).then(result => {
-			let contextPathname = DirectoryManager.getDirectory(contextEntry.filePath);
+			let contextPathname;
+			if(contextEntry.filePath) {
+				contextPathname = DirectoryManager.getDirectory(contextEntry.filePath);
+			} else {
+				contextPathname = Fetcher.getContextPathname(contextEntry.url);
+			}
 			let filename = Fetcher.getFilenameFromSrc(url, result.headers?.["content-type"]);
 			let assetUrlLocation = path.join(this.#assetsFolder, filename);
 			let fullOutputLocation = path.join(contextPathname, assetUrlLocation);

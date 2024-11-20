@@ -130,12 +130,12 @@ class DataSource {
 		}
 
 		let entries = [];
-		for(let entry of dataEntries) {
+		for(let rawEntry of dataEntries) {
 			if(typeof this.cleanEntry === "function") {
-				let cleaned = await this.cleanEntry(entry, data);
+				let cleaned = await this.cleanEntry(rawEntry, data);
 				entries.push(cleaned);
 			} else {
-				entries.push(entry)
+				entries.push(rawEntry);
 			}
 		}
 
