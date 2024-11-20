@@ -188,6 +188,10 @@ class Importer {
 		}
 	}
 
+	static shouldConvertToMarkdown(entry) {
+		return this.isHtml(entry) || entry.contentType === "text";
+	}
+
 	static isHtml(entry) {
 		// TODO add a CLI override for --importContentType?
 		// TODO add another path to guess if content is HTML https://mimesniff.spec.whatwg.org/#identifying-a-resource-with-an-unknown-mime-type
@@ -199,7 +203,7 @@ class Importer {
 		for(let source of this.sources) {
 			for(let entry of await source.getEntries()) {
 				let contentType = entry.contentType;
-				if(Importer.isHtml(entry) && options.contentType === "markdown") {
+				if(Importer.shouldConvertToMarkdown(entry) && options.contentType === "markdown") {
 					contentType = "markdown";
 				}
 
@@ -216,11 +220,10 @@ class Importer {
 		let promises = await Promise.allSettled(entries.map(async entry => {
 			if(Importer.isHtml(entry)) {
 				entry.content = await this.htmlTransformer.transform(entry.content, entry);
-
-				if(options.contentType === "markdown") {
-					entry.content = await this.markdownService.toMarkdown(entry.content, entry.url);
-					entry.contentType = "markdown";
-				}
+			}
+			if(Importer.shouldConvertToMarkdown(entry) && options.contentType === "markdown") {
+				entry.content = await this.markdownService.toMarkdown(entry.content, entry.url);
+				entry.contentType = "markdown";
 			}
 
 			return entry;
