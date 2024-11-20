@@ -21,7 +21,6 @@ import { WordPressApi } from "./DataSource/WordPressApi.js";
 import { BlueskyUser } from "./DataSource/BlueskyUser.js";
 import { FediverseUser } from "./DataSource/FediverseUser.js";
 
-
 const require = createRequire(import.meta.url);
 const pkg = require("../package.json");
 
@@ -190,7 +189,7 @@ class Importer {
 	}
 
 	static isHtml(entry) {
-		// TODO add a CLI option for --importContentType?
+		// TODO add a CLI override for --importContentType?
 		// TODO add another path to guess if content is HTML https://mimesniff.spec.whatwg.org/#identifying-a-resource-with-an-unknown-mime-type
 		return entry.contentType === "html";
 	}
@@ -199,7 +198,12 @@ class Importer {
 		let entries = [];
 		for(let source of this.sources) {
 			for(let entry of await source.getEntries()) {
-				entry.filePath = this.getFilePath(entry);
+				let contentType = entry.contentType;
+				if(Importer.isHtml(entry) && options.contentType === "markdown") {
+					contentType = "markdown";
+				}
+
+				entry.filePath = this.getFilePath(entry, contentType);
 
 				entries.push(entry);
 			}
@@ -215,11 +219,8 @@ class Importer {
 
 				if(options.contentType === "markdown") {
 					entry.content = await this.markdownService.toMarkdown(entry.content, entry.url);
+					entry.contentType = "markdown";
 				}
-			}
-
-			if(options.contentType) {
-				entry.contentType = options.contentType;
 			}
 
 			return entry;
@@ -245,7 +246,7 @@ class Importer {
 		});
 	}
 
-	getFilePath(entry) {
+	getFilePath(entry, contentType) {
 		let { url } = entry;
 
 		let source = entry.source;
@@ -284,7 +285,7 @@ class Importer {
 		}
 
 		let pathname = path.join(".", ...subdirs, path.normalize(fallbackPath));
-		let extension = entry.contentType === "markdown" ? ".md" : ".html";
+		let extension = contentType === "markdown" ? ".md" : ".html";
 
 		if(pathname.endsWith("/")) {
 			return `${pathname.slice(0, -1)}${extension}`;

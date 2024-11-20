@@ -30,9 +30,7 @@ class Rss extends DataSource {
 	}
 
 	getUniqueIdFromEntry(entry) {
-		// let id = entry.link || entry.guid["#text"];
-		let id = entry.guid["#text"];
-		return `${DataSource.UUID_PREFIX}::${Rss.TYPE}::${id}`;
+		return `${DataSource.UUID_PREFIX}::${Rss.TYPE}::${entry.guid["#text"]}`;
 	}
 
 	getHtmlFromMediaEntry(mediaSources) {
