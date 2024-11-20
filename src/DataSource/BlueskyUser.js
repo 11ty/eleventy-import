@@ -5,23 +5,15 @@ class BlueskyUser extends Rss {
 	static TYPE = "bluesky";
 	static TYPE_FRIENDLY = "Bluesky";
 
-	#username;
+	static normalizeUsername(username) {
+		if(username.startsWith("@")) {
+			return username.slice(1);
+		}
+		return username;
+	}
 
 	constructor(username) {
-		super(`https://bsky.app/profile/${username}/rss`);
-		this.username = username;
-	}
-
-	set username(username) {
-		if(username.startsWith("@")) {
-			this.#username = username.slice(1);
-		} else {
-			this.#username = username;
-		}
-	}
-
-	get username() {
-		return this.#username;
+		super(`https://bsky.app/profile/${BlueskyUser.normalizeUsername(username)}/rss`);
 	}
 
 	static getFilePath(url) {
