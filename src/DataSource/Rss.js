@@ -30,7 +30,33 @@ class Rss extends DataSource {
 	}
 
 	getUniqueIdFromEntry(entry) {
-		return `${DataSource.UUID_PREFIX}::${Rss.TYPE}::${entry.guid["#text"]}`;
+		// let id = entry.link || entry.guid["#text"];
+		let id = entry.guid["#text"];
+		return `${DataSource.UUID_PREFIX}::${Rss.TYPE}::${id}`;
+	}
+
+	getHtmlFromMediaEntry(mediaSources) {
+		if(!Array.isArray(mediaSources)) {
+			mediaSources = [mediaSources];
+		}
+		/* {
+			'media:rating': { '#text': 'nonadult', '@_scheme': 'urn:simple' },
+			'media:description': {
+				'#text': 'A fake blue sky wall sits behind a body of water. A man climbs a flight of stairs meant to blend in with the wall. From the Truman Show',
+				'@_type': 'plain'
+			},
+			'@_url': 'https://cdn.masto.host/fediversezachleatcom/media_attachments/files/113/487/344/514/939/049/original/ff062be4c5eaf642.png',
+			'@_type': 'image/png',
+			'@_fileSize': 879593,
+			'@_medium': 'image'
+			} */
+
+		return mediaSources.filter(source => {
+			// Only supporting images for now
+			return !source["@_medium"] || source["@_medium"] === "image";
+		}).map(source => {
+			return `<img src="${source["@_url"]}" alt="${source["media:description"]["#text"]}">`;
+		}).join("\n");
 	}
 
 	cleanEntry(entry, data) {
@@ -49,6 +75,12 @@ class Rss extends DataSource {
 			});
 		}
 
+		let content = entry["content:encoded"] || entry.content || entry.description;
+
+		if(entry["media:content"]) {
+			content += `\n${this.getHtmlFromMediaEntry(entry["media:content"])}`;
+		}
+
 		return {
 			uuid: this.getUniqueIdFromEntry(entry),
 			type: Rss.TYPE,
@@ -57,7 +89,7 @@ class Rss extends DataSource {
 			authors,
 			date: this.toIsoDate(entry.pubDate),
 			// dateUpdated: entry.updated,
-			content: entry["content:encoded"] || entry.content || entry.description,
+			content,
 			// contentType: "", // unknown
 		}
 	}

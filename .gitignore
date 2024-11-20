@@ -1,4 +1,7 @@
 .cache
 node_modules
 .env
+
+# local
 dist*
+DEVLOG.md

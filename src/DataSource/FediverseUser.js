@@ -1,14 +1,14 @@
 import path from "node:path";
 import { DataSource } from "../DataSource.js";
+import { Rss } from "./Rss.js";
 
-class FediverseUser extends DataSource {
+class FediverseUser extends Rss {
 	static TYPE = "fediverse";
 	static TYPE_FRIENDLY = "Fediverse";
 
 	constructor(fullUsername) {
-		super();
-
 		let { username, hostname } = FediverseUser.parseUsername(fullUsername);
+		super(`https://${hostname}/users/${username}.rss`);
 
 		this.username = username;
 		this.hostname = hostname;
@@ -38,51 +38,17 @@ class FediverseUser extends DataSource {
 		}
 	}
 
-	getType() {
-		return "xml";
-	}
-
-	getUrl() {
-		return `https://${this.hostname}/users/${this.username}.rss`
-	}
-
-	getEntriesFromData(data) {
-		if(Array.isArray(data.rss?.channel?.item)) {
-			return data.rss.channel.item;
-		}
-
-		if(data.rss?.channel?.item) {
-			return [data.rss.channel.item];
-		}
-
-		return [];
-	}
-
-	getUniqueIdFromEntry(entry) {
-		return `${DataSource.UUID_PREFIX}::${FediverseUser.TYPE}::${entry.link}`;
-	}
-
 	static getFilePath(url) {
 		let { hostname, username, postId } = FediverseUser.parseFromUrl(url);
 		return path.join(`${username}@${hostname}`, postId);
 	}
 
 	cleanEntry(entry, data) {
-		return {
-			uuid: this.getUniqueIdFromEntry(entry),
-			type: FediverseUser.TYPE,
-			title: this.toReadableDate(entry.pubDate),
-			url: entry.link,
-			authors: [
-				{
-					name: data.rss.channel.title,
-					url: data.rss.channel.link,
-				}
-			],
-			date: this.toIsoDate(entry.pubDate),
-			content: entry.description,
-			contentType: "html",
-		}
+		let obj = super.cleanEntry(entry, data);
+		obj.type = FediverseUser.TYPE;
+		obj.contentType = "html";
+
+		return obj;
 	}
 }
 

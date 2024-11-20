@@ -143,9 +143,10 @@ class WordPressApi extends DataSource {
 
 		let metadata = {};
 		if(entry.jetpack_featured_media_url) {
-			metadata.featuredImage = await this.fetcher.fetchAsset(entry.jetpack_featured_media_url, this.outputFolder, {
+			metadata.featuredImage = await this.fetcher.fetchAsset(entry.jetpack_featured_media_url, {
 				url,
-				status
+				status,
+				filePath: entry.filePath,
 			});
 		}
 

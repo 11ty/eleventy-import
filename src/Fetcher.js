@@ -5,6 +5,7 @@ import kleur from "kleur";
 import { XMLParser } from "fast-xml-parser";
 
 import EleventyFetch from "@11ty/eleventy-fetch";
+import { DirectoryManager } from "./DirectoryManager.js";
 import { Logger } from "./Logger.js";
 
 // 255 total (hash + url + extension)
@@ -108,7 +109,7 @@ class Fetcher {
 		this.#persistManager = manager;
 	}
 
-	async fetchAsset(url, outputFolder, contextEntry) {
+	async fetchAsset(url, contextEntry) {
 		// Adds protocol from original page URL if a protocol relative URL
 		if(url.startsWith("//") && contextEntry.url) {
 			let contextUrl = new URL(contextEntry.url);
@@ -126,10 +127,10 @@ class Fetcher {
 			verbose: true,
 			showErrors: true,
 		}).then(result => {
-			let contextPathname = Fetcher.getContextPathname(contextEntry.url);
+			let contextPathname = DirectoryManager.getDirectory(contextEntry.filePath);
 			let filename = Fetcher.getFilenameFromSrc(url, result.headers?.["content-type"]);
 			let assetUrlLocation = path.join(this.#assetsFolder, filename);
-			let fullOutputLocation = path.join(outputFolder, contextPathname, assetUrlLocation);
+			let fullOutputLocation = path.join(contextPathname, assetUrlLocation);
 			let urlValue = assetUrlLocation;
 
 			if(this.writtenAssetFiles.has(fullOutputLocation)) {

@@ -74,9 +74,10 @@ class HostedWordPressApi extends DataSource {
 
 		if(entry.featured_image) {
 			// TODO opengraphImage: { width, height, src, mime }
-			metadata.featuredImage = await this.fetcher.fetchAsset(entry.featured_image, this.outputFolder, {
+			metadata.featuredImage = await this.fetcher.fetchAsset(entry.featured_image, {
 				url,
 				status,
+				filePath: entry.filePath,
 			});
 		}
 

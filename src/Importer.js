@@ -199,6 +199,8 @@ class Importer {
 		let entries = [];
 		for(let source of this.sources) {
 			for(let entry of await source.getEntries()) {
+				entry.filePath = this.getFilePath(entry);
+
 				entries.push(entry);
 			}
 		}
@@ -333,7 +335,7 @@ class Importer {
 		let filepathConflicts = {};
 
 		for(let entry of entries) {
-			let pathname = this.getFilePath(entry);
+			let pathname = entry.filePath;
 			if(pathname === false) {
 				continue;
 			}
