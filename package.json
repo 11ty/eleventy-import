@@ -5,6 +5,7 @@
 	"type": "module",
 	"main": "./src/Importer.js",
 	"exports": {
+		".": "./src/Importer.js",
 		"./DataSource": "./src/DataSource.js"
 	},
 	"engines": {
