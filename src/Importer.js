@@ -208,6 +208,19 @@ class Importer {
 		return entry.contentType === "html";
 	}
 
+	async fetchRelatedMedia(cleanEntry) {
+		let relatedMedia = cleanEntry?.metadata?.media;
+		if(!relatedMedia) {
+			return;
+		}
+
+		for(let mediaType in relatedMedia || {}) {
+			let localUrl = await this.fetcher.fetchAsset(relatedMedia[mediaType], cleanEntry);
+			// TODO parallel
+			cleanEntry.metadata.media[mediaType] = localUrl;
+		}
+	}
+
 	async getEntries(options = {}) {
 		let entries = [];
 		for(let source of this.sources) {
@@ -228,6 +241,8 @@ class Importer {
 		}
 
 		let promises = await Promise.allSettled(entries.map(async entry => {
+			await this.fetchRelatedMedia(entry);
+
 			if(Importer.isHtml(entry)) {
 				entry.content = await this.htmlTransformer.transform(entry.content, entry);
 			}

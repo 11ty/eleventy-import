@@ -63,35 +63,32 @@ class HostedWordPressApi extends DataSource {
 		];
 	}
 
-	async cleanEntry(entry, data) {
+	async cleanEntry(rawEntry, data) {
 		let metadata = {
-			categories: Object.keys(entry.categories),
-			tags: Object.keys(entry.tags),
+			categories: Object.keys(rawEntry.categories),
+			tags: Object.keys(rawEntry.tags),
 		};
 
-		let url = this.getUrlFromEntry(entry);
-		let status = this.cleanStatus(entry.status);
+		if(rawEntry.featured_image) {
+			metadata.media = {
+				featuredImage: rawEntry.featured_image,
+			};
 
-		if(entry.featured_image) {
-			// TODO opengraphImage: { width, height, src, mime }
-			metadata.featuredImage = await this.fetcher.fetchAsset(entry.featured_image, {
-				url,
-				status,
-				filePath: entry.filePath,
-			});
+			// backwards compatibility (not downloaded or optimized)
+			metadata.featuredImage = rawEntry.featured_image;
 		}
 
 		return {
-			uuid: this.getUniqueIdFromEntry(entry),
+			uuid: this.getUniqueIdFromEntry(rawEntry),
 			type: HostedWordPressApi.TYPE,
-			title: entry.title,
-			url,
-			authors: this.#getAuthorData(entry.author),
-			date: entry.date,
-			dateUpdated: entry.modified,
-			content: entry.content,
+			title: rawEntry.title,
+			url: this.getUrlFromEntry(rawEntry),
+			authors: this.#getAuthorData(rawEntry.author),
+			date: rawEntry.date,
+			dateUpdated: rawEntry.modified,
+			content: rawEntry.content,
 			contentType: "html",
-			status,
+			status: this.cleanStatus(rawEntry.status),
 			metadata,
 		}
 	}

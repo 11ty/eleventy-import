@@ -137,38 +137,44 @@ class WordPressApi extends DataSource {
 	}
 
 	// Supports: Title, Author, Published/Updated Dates
-	async cleanEntry(entry, data) {
-		let url = this.getUrlFromEntry(entry);
-		let status = this.cleanStatus(entry.status)
+	async cleanEntry(rawEntry, data) {
+		let url = this.getUrlFromEntry(rawEntry);
+		let status = this.cleanStatus(rawEntry.status)
 
 		let metadata = {};
-		if(entry.jetpack_featured_media_url) {
-			metadata.featuredImage = await this.fetcher.fetchAsset(entry.jetpack_featured_media_url, {
-				url,
-				status,
-				filePath: entry.filePath,
-			});
+		if(rawEntry.jetpack_featured_media_url || rawEntry.og_image) {
+			let media = {};
+			if(rawEntry.og_image) {
+				media.opengraphImage = rawEntry.og_image?.url;
+			}
+			if(rawEntry.jetpack_featured_media_url) {
+				media.featuredImage = rawEntry.jetpack_featured_media_url;
+
+				// backwards compatibility (not downloaded or optimized)
+				metadata.featuredImage = rawEntry.jetpack_featured_media_url;
+			}
+			metadata.media = media;
 		}
 
-		let categories = await this.#getCategories(entry.categories);
+		let categories = await this.#getCategories(rawEntry.categories);
 		if(categories.length) {
 			metadata.categories = categories;
 		}
 
-		let tags = await this.#getTags(entry.tags);
+		let tags = await this.#getTags(rawEntry.tags);
 		if(tags.length) {
 			metadata.tags = tags;
 		}
 
-		let obj = {
-			uuid: this.getUniqueIdFromEntry(entry),
+		let cleanEntry = {
+			uuid: this.getUniqueIdFromEntry(rawEntry),
 			type: WordPressApi.TYPE,
-			title: entry.title?.rendered,
+			title: rawEntry.title?.rendered,
 			url,
-			authors: await this.#getAuthors(entry.author),
-			date: entry.date_gmt,
-			dateUpdated: entry.modified_gmt,
-			content: entry.content.rendered,
+			authors: await this.#getAuthors(rawEntry.author),
+			date: rawEntry.date_gmt,
+			dateUpdated: rawEntry.modified_gmt,
+			content: rawEntry.content.rendered,
 			contentType: "html",
 			status,
 			metadata,
@@ -176,19 +182,10 @@ class WordPressApi extends DataSource {
 
 		if(metadata.categories) {
 			// map WordPress categories for use in Eleventy tags (not WordPress metadata tags, which are different)
-			obj.tags = metadata.categories;
+			cleanEntry.tags = metadata.categories;
 		}
 
-		if(entry.og_image) {
-			obj.metadata.opengraphImage = {
-				width: entry.og_image?.width,
-				height: entry.og_image?.height,
-				src: entry.og_image?.url,
-				mime: entry.og_image?.type,
-			}
-		}
-
-		return obj;
+		return cleanEntry;
 	}
 }
 

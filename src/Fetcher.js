@@ -122,7 +122,6 @@ class Fetcher {
 	getAssetLocation(assetUrl, assetContentType, contextEntry) {
 		let filename = Fetcher.getFilenameFromSrc(assetUrl, assetContentType);
 		let assetUrlLocation = Utils.pathJoin(this.#assetsFolder, filename);
-
 		// root /assets folder
 		if(!this.useRelativeAssets) {
 			return {
@@ -141,6 +140,7 @@ class Fetcher {
 
 		return {
 			url: assetUrlLocation,
+			// filePath: Utils.pathJoin(this.#outputFolder, contextPathname, assetUrlLocation),
 			filePath: Utils.pathJoin(contextPathname, assetUrlLocation),
 		}
 	}
