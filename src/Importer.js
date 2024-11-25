@@ -215,7 +215,9 @@ class Importer {
 		}
 
 		for(let mediaType in relatedMedia || {}) {
-			let localUrl = await this.fetcher.fetchAsset(relatedMedia[mediaType], cleanEntry);
+			let rawUrl = relatedMedia[mediaType];
+			let localUrl = await this.fetcher.fetchAsset(rawUrl, cleanEntry);
+
 			// TODO parallel
 			cleanEntry.metadata.media[mediaType] = localUrl;
 		}

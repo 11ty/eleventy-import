@@ -37,7 +37,7 @@ class Fetcher {
 		let {pathname} = new URL(src);
 		let hash = this.createHash(src);
 
-		let filename = pathname.split("/").pop();
+		let filename = decodeURIComponent(pathname.split("/").pop());
 		let lastDot = filename.lastIndexOf(".");
 
 		if(lastDot > -1) {
@@ -47,6 +47,7 @@ class Fetcher {
 		}
 
 		let [, fileExtensionFallback] = contentType.split("/");
+
 		// No known file extension
 		return `${filename.slice(0, MAXIMUM_URL_FILENAME_SIZE)}-${hash}${fileExtensionFallback ? `.${fileExtensionFallback}` : ""}`;
 	}
@@ -196,7 +197,7 @@ class Fetcher {
 				fs.writeFileSync(fullOutputLocation, result.body);
 			}
 
-			// Don’t persist assets if upstream post is a draft
+			// Don’t persist (e.g. back to GitHub) assets if upstream post is a draft
 			if(contextEntry.status !== "draft" && this.#persistManager.canPersist()) {
 				this.#persistManager.persistFile(fullOutputLocation, result.body, {
 					assetUrl,
