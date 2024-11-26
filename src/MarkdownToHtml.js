@@ -72,8 +72,8 @@ class MarkdownToHtml {
 				let language = (brush[0] || ":").split(":")[1].trim();
 
 				return `\`\`\`${WORDPRESS_TO_PRISM_LANGUAGE_TRANSLATION[language] || language}
-		${content}
-		\`\`\``;
+${content}
+\`\`\``;
 			}
 		});
 
