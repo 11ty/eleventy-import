@@ -260,7 +260,10 @@ class Importer {
 				entry.content = await this.htmlTransformer.transform(entry.content, entry);
 			}
 			if(Importer.shouldConvertToMarkdown(entry) && options.contentType === "markdown") {
-				entry.content = await this.markdownService.toMarkdown(entry.content, entry.url);
+				await this.markdownService.asyncInit();
+
+				entry.content = await this.markdownService.toMarkdown(entry.content, entry);
+
 				entry.contentType = "markdown";
 			}
 
@@ -301,18 +304,19 @@ class Importer {
 			fallbackPath = (new URL(url)).pathname;
 		}
 
+		// Data source specific override
 		let outputOverrideFn = source?.getFilepathFormatFunction();
-		if(outputOverrideFn && typeof outputOverrideFn === "function") { // entry override
+		if(outputOverrideFn && typeof outputOverrideFn === "function") {
 			let pathname = outputOverrideFn(url, fallbackPath);
 			if(pathname === false) {
 				return false;
 			}
 
-			// does *not* add a file extension for you
+			// does method does *not* add a file extension for you, you must supply one in `filepathFormat` function
 			return path.join(this.#outputFolder, pathname);
 		}
 
-		// WordPress drafts only have a UUID query param e.g. ?p=ID_NUMBER
+		// WordPress draft posts only have a `p` query param e.g. ?p=ID_NUMBER
 		if(fallbackPath === "/") {
 			fallbackPath = Fetcher.createHash(entry.url);
 		}
