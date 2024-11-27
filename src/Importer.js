@@ -30,6 +30,7 @@ const MAX_IMPORT_SIZE = 0;
 class Importer {
 	#draftsFolder = "drafts";
 	#outputFolder = ".";
+	#assetReferenceType;
 
 	constructor() {
 		this.startTime = new Date();
@@ -92,14 +93,25 @@ class Importer {
 		this.fetcher.setAssetsFolder(folder);
 	}
 
+	isAssetsColocated() {
+		return this.#assetReferenceType === "colocate";
+	}
+
 	setAssetReferenceType(refType) {
+		if(refType === "colocate") {
+			// no assets subfolder
+			this.setAssetsFolder("");
+		}
+
 		if(refType === "absolute") {
 			this.fetcher.setUseRelativeAssetPaths(false);
-		} else if(refType === "relative") {
+		} else if(refType === "relative" || refType === "colocate") {
 			this.fetcher.setUseRelativeAssetPaths(true);
 		} else {
-			throw new Error(`Invalid value for --assetrefs, must be \`relative\` or \`absolute\`. Received: ${refType} (${typeof refType})`);
+			throw new Error(`Invalid value for --assetrefs, must be one of: relative, colocate, or absolute. Received: ${refType} (${typeof refType})`);
 		}
+
+		this.#assetReferenceType = refType;
 	}
 
 	setDraftsFolder(dir) {
@@ -109,7 +121,6 @@ class Importer {
 	setOutputFolder(dir) {
 		this.#outputFolder = dir;
 		this.fetcher.setOutputFolder(dir);
-		this.markdownService.setOutputFolder(dir);
 	}
 
 	setCacheDuration(duration) {
@@ -318,9 +329,15 @@ class Importer {
 		let extension = contentType === "markdown" ? ".md" : ".html";
 
 		if(pathname.endsWith("/")) {
+			if(this.isAssetsColocated()) {
+				return `${pathname}index${extension}`;
+			}
 			return `${pathname.slice(0, -1)}${extension}`;
 		}
 
+		if(this.isAssetsColocated()) {
+			return `${pathname}/index${extension}`;
+		}
 		return `${pathname}${extension}`;
 	}
 
