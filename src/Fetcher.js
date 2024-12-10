@@ -18,8 +18,6 @@ const xmlParser = new XMLParser({
 	ignoreAttributes: false,
 	allowBooleanAttributes: true,
 	parseAttributeValue: true,
-	processEntities: false, // disable this, was causing inconsistencies in Bluesky entries
-	// htmlEntities: true,
 });
 
 class Fetcher {
