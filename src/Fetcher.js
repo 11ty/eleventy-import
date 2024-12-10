@@ -18,6 +18,8 @@ const xmlParser = new XMLParser({
 	ignoreAttributes: false,
 	allowBooleanAttributes: true,
 	parseAttributeValue: true,
+	processEntities: false, // disable this, was causing inconsistencies in Bluesky entries
+	// htmlEntities: true,
 });
 
 class Fetcher {
@@ -56,6 +58,10 @@ class Fetcher {
 		let base64Hash = createHash("sha256").update(str).digest("base64");
 
 		return base64Hash.replace(/[^A-Z0-9]/gi, "").slice(0, HASH_FILENAME_MAXLENGTH);
+	}
+
+	static parseXml(content) {
+		return xmlParser.parse(content);
 	}
 
 	#cacheDuration = "0s";
@@ -249,7 +255,7 @@ class Fetcher {
 
 		return EleventyFetch(url, opts).then(result => {
 			if(opts.type === "xml") {
-				return xmlParser.parse(result);
+				return Fetcher.parseXml(result);
 			}
 
 			return result;

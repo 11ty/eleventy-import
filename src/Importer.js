@@ -4,6 +4,7 @@ import fs from "graceful-fs";
 import yaml from "js-yaml";
 import kleur from "kleur";
 import slugify from '@sindresorhus/slugify';
+import * as entities from "entities";
 
 import { Logger } from "./Logger.js";
 import { Fetcher } from "./Fetcher.js";
@@ -204,13 +205,27 @@ class Importer {
 	}
 
 	addDataOverride(type, url, data) {
+		let found = false;
 		for(let source of this.getSourcesForType(type)) {
 			source.setDataOverride(url, data);
+			found = true;
+		}
+
+		if(!found) {
+			throw new Error("addDataOverride(type) not found: " + type)
 		}
 	}
 
+	static shouldUseMarkdownFileExtension(entry) {
+		return this.isText(entry) || this.isHtml(entry);
+	}
+
 	static shouldConvertToMarkdown(entry) {
-		return this.isHtml(entry) || entry.contentType === "text";
+		return this.isHtml(entry);
+	}
+
+	static isText(entry) {
+		return entry.contentType === "text";
 	}
 
 	static isHtml(entry) {
@@ -235,11 +250,13 @@ class Importer {
 	}
 
 	async getEntries(options = {}) {
+		let isWritingToMarkdown = options.contentType === "markdown";
+
 		let entries = [];
 		for(let source of this.sources) {
 			for(let entry of await source.getEntries()) {
 				let contentType = entry.contentType;
-				if(Importer.shouldConvertToMarkdown(entry) && options.contentType === "markdown") {
+				if(Importer.shouldUseMarkdownFileExtension(entry) && isWritingToMarkdown) {
 					contentType = "markdown";
 				}
 
@@ -257,14 +274,23 @@ class Importer {
 			await this.fetchRelatedMedia(entry);
 
 			if(Importer.isHtml(entry)) {
-				entry.content = await this.htmlTransformer.transform(entry.content, entry);
+				let decodedHtml = entities.decodeHTML(entry.content);
+				entry.content = await this.htmlTransformer.transform(decodedHtml, entry);
 			}
-			if(Importer.shouldConvertToMarkdown(entry) && options.contentType === "markdown") {
-				await this.markdownService.asyncInit();
 
-				entry.content = await this.markdownService.toMarkdown(entry.content, entry);
+			if(isWritingToMarkdown) {
+				if(Importer.isText(entry)) {
+					// _only_ decode newlines
+					entry.content = entry.content.split("&#xA;").join("\n");
+				}
 
-				entry.contentType = "markdown";
+				if(Importer.shouldConvertToMarkdown(entry)) {
+					await this.markdownService.asyncInit();
+
+					entry.content = await this.markdownService.toMarkdown(entry.content, entry);
+
+					entry.contentType = "markdown";
+				}
 			}
 
 			return entry;

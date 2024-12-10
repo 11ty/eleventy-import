@@ -9,6 +9,11 @@ import { DataSource } from "../src/DataSource.js";
 import { Persist } from "../src/Persist.js";
 import { Fetcher } from "../src/Fetcher.js";
 
+function cleanContent(content) {
+	// trim extra whitespace (dirty workaround for trailing whitespace)
+	return content.split("\n").map(line => line.trim()).join("\n");
+}
+
 const require = createRequire(import.meta.url);
 
 test("YouTube user", async (t) => {
@@ -20,15 +25,60 @@ test("YouTube user", async (t) => {
 	importer.addSource("youtubeUser", "UCskGTioqrMBcw8pd14_334A");
 
 	let stubContent = fs.readFileSync("./test/sources/youtube-user.xml");
-	importer.addDataOverride("wordpress", "https://www.youtube.com/feeds/videos.xml?channel_id=UCskGTioqrMBcw8pd14_334A", stubContent);
+	importer.addDataOverride("youtube", "https://www.youtube.com/feeds/videos.xml?channel_id=UCskGTioqrMBcw8pd14_334A", Fetcher.parseXml(stubContent.toString("utf8")));
 
-	let entries = await importer.getEntries();
+	let entries = await importer.getEntries({ contentType: "markdown" });
 	assert.equal(entries.length, 15);
 
 	let [post] = entries;
+
 	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "contentType", "date", "dateUpdated", "filePath", "title", "type", "url", "uuid"]);
 	assert.equal(post.content.length, 812);
+	assert.equal(post.content, `CloudCannon is the Recommended CMS Partner of 11ty:
+
+https://cloudcannon.com/11tyconf/
+https://cloudcannon.com/blog/how-to-manage-hundreds-of-connected-websites-with-a-git-based-headless-cms/
+
+This was a talk given at the 11ty International Symposium on Making Web Sites Real Good (2024): https://conf.11ty.dev/2024/managing-content-management/
+
+If Jamstack has taught us anything, it’s that websites work best when they’re generated from folders full of flat files. Even massively interconnected websites!
+
+We talk through a classically Jamstacky approach to content management for large organizations: mounting shared layout and component repositories, creating a central content lake to aggregate content like news articles, and automating site builds and deployments when your content or dependencies change.`);
+
 	assert.equal(post.authors[0].name, "Eleventy");
+});
+
+test("Bluesky posts", async (t) => {
+	let importer = new Importer();
+
+	importer.setVerbose(false);
+	importer.setDryRun(true);
+
+	importer.addSource("bluesky", "zachleat.com");
+
+	let stubContent = fs.readFileSync("./test/sources/bluesky-test.xml");
+
+	importer.addDataOverride("bluesky", "https://bsky.app/profile/zachleat.com/rss", Fetcher.parseXml(stubContent.toString("utf8")));
+
+	let entries = await importer.getEntries({ contentType: "markdown" });
+	assert.equal(entries.length, 1);
+
+	let [post] = entries;
+
+	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "contentType", "date", "filePath", "title", "type", "url", "uuid"]);
+	assert.equal(post.content.length, 323);
+	assert.equal(post.content, `time to review my HTML wrapped 2024
+
+Most used: &lt;a&gt;
+Doing work to reduce infrastructure bills: &lt;picture&gt;
+Underrated: &lt;output&gt;
+Misunderstood: &lt;details&gt;
+Tame but a small win: &lt;search&gt;
+Hope the design never calls for it: &lt;dialog&gt;
+Not today Satan: &lt;canvas&gt;
+Pure vibes: &lt;noscript&gt;`);
+
+	assert.equal(post.authors[0].name, "@zachleat.com - Zach Leatherman");
 });
 
 test("WordPress import", async (t) => {
@@ -51,12 +101,51 @@ test("WordPress import", async (t) => {
 	importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/categories/1", require("./sources/blog-awesome-categories.json"));
 	importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/users/155431370", require("./sources/blog-awesome-author.json"));
 
-	let entries = await importer.getEntries();
+	let entries = await importer.getEntries({ contentType: "markdown" });
 	assert.equal(entries.length, 1);
 
 	let [post] = entries;
 	assert.deepEqual(Object.keys(post).sort(), ["authors", "content", "contentType", "date", "dateUpdated", "filePath", "metadata", "status", "title", "type", "url", "uuid"]);
-	assert.equal(post.content.length, 6134);
+
+	assert.equal(cleanContent(post.content), `We’re so close to launching version 6, and we figured it was high time to make an official announcement. So, save the date for February. Font Awesome 6 will go beyond pure icon-imagination!
+
+![](assets/image-calendar-exclamation-2-eKNZqhhuChge.png)
+
+Save the date! February 2022 is just around the corner!
+
+So, what’s new?
+
+* * *
+
+## More Icons
+
+Font Awesome 6 contains over 7,000 new icons, so you’re sure to find what you need for your project. Plus, we’ve redesigned most of our icons from scratch, so they’re more consistent and easier to use.
+
+![](assets/image-icons-2-66KjmgCOuZQw.png)
+
+* * *
+
+## More Styles
+
+Font Awesome 6 includes five icons styles: solid, regular, light, duotone, and the new THIN style — not to mention all of our brand icons. And coming later in 2022 is the entirely new SHARP family of styles.
+
+![](assets/image-styles-2-SNjQOsXaJuRQ.png)
+
+* * *
+
+## More Ways to Use
+
+Font Awesome 6 makes it even easier to use icons where you want to. More plugins and packages to match your stack. Less time wrestling browser rendering.
+
+![](assets/image-awesome-2-1AOLfzrlbkMJ.png)
+
+* * *
+
+We’ll keep fine-tuning that sweet, sweet recipe until February. Believe us; the web’s going to have a new scrumpdillyicious secret ingredient!
+
+[Check Out the Beta!](https://fontawesome.com/v6.0)`);
+
+	assert.equal(post.content.length, 1304);
 	assert.equal(post.authors[0].name, "Matt Johnson");
 });
 
