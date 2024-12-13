@@ -44,13 +44,15 @@ npx @11ty/import [type] [target] --cacheduration=20m
 # Change output format (default: markdown)
 npx @11ty/import [type] [target] --format=html
 
-# Change asset reference URLs: relative (default), absolute, colocate
+# Change asset reference URLs: relative (default), absolute, colocate, disabled
 # slug.md and assets/asset.png with <img src="assets/asset.png">
 npx @11ty/import [type] [target] --assetrefs=relative
 # slug.md and assets/asset.png with <img src="/assets/asset.png">
 npx @11ty/import [type] [target] --assetrefs=absolute
 # slug/index.md and slug/asset.png with <img src="asset.png">
 npx @11ty/import [type] [target] --assetrefs=colocate
+# Don’t download any assets
+npx @11ty/import [type] [target] --assetrefs=disabled
 
 # EXPERIMENTAL: Persist *new* non-draft content
 # - `github` persist type requires a `GITHUB_TOKEN` environment variable.
