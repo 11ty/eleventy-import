@@ -16,7 +16,6 @@
 	},
 	"scripts": {
 		"test": "node --test",
-		"demo": "node .",
 		"prepare": "husky"
 	},
 	"publishConfig": {

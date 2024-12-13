@@ -98,10 +98,11 @@ if(help) {
   # Change output format (default: markdown)
   npx @11ty/import [type] [target] --format=html
 
-  # Change asset reference URLs: relative (default), absolute, colocate
+  # Change asset reference URLs: relative (default), absolute, colocate, disabled
   npx @11ty/import [type] [target] --assetrefs=relative
   npx @11ty/import [type] [target] --assetrefs=absolute
   npx @11ty/import [type] [target] --assetrefs=colocate
+  npx @11ty/import [type] [target] --assetrefs=disabled
 `);
 
 	process.exit();

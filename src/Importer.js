@@ -94,6 +94,10 @@ class Importer {
 		this.fetcher.setAssetsFolder(folder);
 	}
 
+	shouldDownloadAssets() {
+		return this.#assetReferenceType !== "disabled";
+	}
+
 	isAssetsColocated() {
 		return this.#assetReferenceType === "colocate";
 	}
@@ -104,12 +108,14 @@ class Importer {
 			this.setAssetsFolder("");
 		}
 
-		if(refType === "absolute") {
+		if(refType === "disabled") {
+			this.fetcher.setDownloadAssets(false);
+		} else if(refType === "absolute") {
 			this.fetcher.setUseRelativeAssetPaths(false);
 		} else if(refType === "relative" || refType === "colocate") {
 			this.fetcher.setUseRelativeAssetPaths(true);
 		} else {
-			throw new Error(`Invalid value for --assetrefs, must be one of: relative, colocate, or absolute. Received: ${refType} (${typeof refType})`);
+			throw new Error(`Invalid value for --assetrefs, must be one of: relative, colocate, absolute, or disabled. Received: ${refType} (${typeof refType})`);
 		}
 
 		this.#assetReferenceType = refType;
@@ -275,7 +281,11 @@ class Importer {
 
 			if(Importer.isHtml(entry)) {
 				let decodedHtml = entities.decodeHTML(entry.content);
-				entry.content = await this.htmlTransformer.transform(decodedHtml, entry);
+				if(!this.shouldDownloadAssets()) {
+					entry.content = decodedHtml;
+				} else {
+					entry.content = await this.htmlTransformer.transform(decodedHtml, entry);
+				}
 			}
 
 			if(isWritingToMarkdown) {

@@ -23,6 +23,13 @@ const xmlParser = new XMLParser({
 });
 
 class Fetcher {
+	#cacheDuration = "0s";
+	#directoryManager;
+	#assetsFolder = "assets";
+	#persistManager;
+	#outputFolder = ".";
+	#downloadAssets = true;
+
 	static USER_AGENT = "Eleventy Import v1.0.0";
 
 	static getContextPathname(url) {
@@ -64,12 +71,6 @@ class Fetcher {
 		return xmlParser.parse(content);
 	}
 
-	#cacheDuration = "0s";
-	#directoryManager;
-	#assetsFolder = "assets";
-	#persistManager;
-	#outputFolder = ".";
-
 	constructor() {
 		this.fetchedUrls = new Set();
 		this.writtenAssetFiles = new Set();
@@ -97,6 +98,10 @@ class Fetcher {
 
 	setAssetsFolder(folder) {
 		this.#assetsFolder = folder;
+	}
+
+	setDownloadAssets(download) {
+		this.#downloadAssets = Boolean(download);
 	}
 
 	setUseRelativeAssetPaths(use) {
@@ -153,6 +158,10 @@ class Fetcher {
 	}
 
 	async fetchAsset(assetUrl, contextEntry) {
+		if(!this.#downloadAssets) {
+			return assetUrl;
+		}
+
 		// Adds protocol from original page URL if a protocol relative URL
 		if(assetUrl.startsWith("//") && contextEntry.url) {
 			let contextUrl = new URL(contextEntry.url);
