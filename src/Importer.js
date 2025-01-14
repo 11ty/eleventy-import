@@ -255,6 +255,39 @@ class Importer {
 		}
 	}
 
+	async getTransformedContent(entry, isWritingToMarkdown) {
+		let content = entry.content;
+
+		if(Importer.isHtml(entry)) {
+			let transformedHtml = content;
+			if(!isWritingToMarkdown) {
+				// decoding built-in with Markdown
+				transformedHtml = entities.decodeHTML(content);
+			}
+
+			if(!this.shouldDownloadAssets()) {
+				content = transformedHtml;
+			} else {
+				content = await this.htmlTransformer.transform(transformedHtml, entry);
+			}
+		}
+
+		if(isWritingToMarkdown) {
+			if(Importer.isText(entry)) {
+				// _only_ decode newlines
+				content = content.split("&#xA;").join("\n");
+			}
+
+			if(Importer.shouldConvertToMarkdown(entry)) {
+				await this.markdownService.asyncInit();
+
+				content = await this.markdownService.toMarkdown(content, entry);
+			}
+		}
+
+		return content;
+	}
+
 	async getEntries(options = {}) {
 		let isWritingToMarkdown = options.contentType === "markdown";
 
@@ -279,28 +312,10 @@ class Importer {
 		let promises = await Promise.allSettled(entries.map(async entry => {
 			await this.fetchRelatedMedia(entry);
 
-			if(Importer.isHtml(entry)) {
-				let decodedHtml = entities.decodeHTML(entry.content);
-				if(!this.shouldDownloadAssets()) {
-					entry.content = decodedHtml;
-				} else {
-					entry.content = await this.htmlTransformer.transform(decodedHtml, entry);
-				}
-			}
+			entry.content = await this.getTransformedContent(entry, isWritingToMarkdown);
 
-			if(isWritingToMarkdown) {
-				if(Importer.isText(entry)) {
-					// _only_ decode newlines
-					entry.content = entry.content.split("&#xA;").join("\n");
-				}
-
-				if(Importer.shouldConvertToMarkdown(entry)) {
-					await this.markdownService.asyncInit();
-
-					entry.content = await this.markdownService.toMarkdown(entry.content, entry);
-
-					entry.contentType = "markdown";
-				}
+			if(isWritingToMarkdown && Importer.shouldConvertToMarkdown(entry)) {
+				entry.contentType = "markdown";
 			}
 
 			return entry;

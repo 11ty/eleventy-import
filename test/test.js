@@ -109,7 +109,7 @@ test("WordPress import", async (t) => {
 
 	assert.equal(cleanContent(post.content), `We’re so close to launching version 6, and we figured it was high time to make an official announcement. So, save the date for February. Font Awesome 6 will go beyond pure icon-imagination!
 
-![](assets/image-calendar-exclamation-2-eKNZqhhuChge.png)
+![](assets/image-calendar-exclamation-2-fgQFmKKbUClc.png)
 
 Save the date! February 2022 is just around the corner!
 
@@ -121,7 +121,7 @@ So, what’s new?
 
 Font Awesome 6 contains over 7,000 new icons, so you’re sure to find what you need for your project. Plus, we’ve redesigned most of our icons from scratch, so they’re more consistent and easier to use.
 
-![](assets/image-icons-2-66KjmgCOuZQw.png)
+![](assets/image-icons-2-QjKY2bnBAg1T.png)
 
 * * *
 
@@ -129,7 +129,7 @@ Font Awesome 6 contains over 7,000 new icons, so you’re sure to find what you 
 
 Font Awesome 6 includes five icons styles: solid, regular, light, duotone, and the new THIN style — not to mention all of our brand icons. And coming later in 2022 is the entirely new SHARP family of styles.
 
-![](assets/image-styles-2-SNjQOsXaJuRQ.png)
+![](assets/image-styles-2-L9iIR9SlzG26.png)
 
 * * *
 
@@ -137,7 +137,7 @@ Font Awesome 6 includes five icons styles: solid, regular, light, duotone, and t
 
 Font Awesome 6 makes it even easier to use icons where you want to. More plugins and packages to match your stack. Less time wrestling browser rendering.
 
-![](assets/image-awesome-2-1AOLfzrlbkMJ.png)
+![](assets/image-awesome-2-O2xta1tL8p5n.png)
 
 * * *
 
@@ -251,4 +251,33 @@ test("Fetcher asset location tests (absolute)", async (t) => {
 		filePath: "assets/test-NzhbK6MSYu2g.png",
 		url: "/assets/test-NzhbK6MSYu2g.png",
 	});
+});
+
+
+test("Markdown cleanup code blocks strip tags", async (t) => {
+	let importer = new Importer();
+
+	importer.setVerbose(false);
+	importer.setDryRun(true);
+
+	let content = await importer.getTransformedContent({
+		content: `<pre id=\"b088\" class=\"graf graf--pre graf-after--p\">$ npm config set “<a class=\"markup--anchor markup--pre-anchor\" title=\"Twitter profile for @fortawesome\" href=\"http://twitter.com/fortawesome\" target=\"_blank\" rel=\"noopener noreferrer\" data-href=\"http://twitter.com/fortawesome\">@fortawesome</a>:registry” <a class=\"markup--anchor markup--pre-anchor\" href=\"https://npm.fontawesome.com/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\" data-href=\"https://npm.fontawesome.com/\">https://npm.fontawesome.com/</a></pre>`,
+		contentType: "html"
+	}, true);
+
+	assert.equal(content.trim(), "```\n$ npm config set “@fortawesome:registry” https://npm.fontawesome.com/\n```");
+});
+
+test("Markdown cleanup code blocks with nested <code>", async (t) => {
+	let importer = new Importer();
+
+	importer.setVerbose(false);
+	importer.setDryRun(true);
+
+	let content2 = await importer.getTransformedContent({
+		content: `<pre id=\"9da4\" class=\"graf graf--pre graf-after--p\">Authorization: Bearer <code>DEAD-BEEF</code></pre>`,
+		contentType: "html"
+	}, true);
+
+	assert.equal(content2.trim(), "```\nAuthorization: Bearer DEAD-BEEF\n```");
 });

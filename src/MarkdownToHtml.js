@@ -187,7 +187,7 @@ class MarkdownToHtml {
 						finalLanguage = WORDPRESS_TO_PRISM_LANGUAGE_TRANSLATION[language] || language;
 
 						// TODO customizable
-						// Questionable default: for code blocks bookended with ` (unnecessarily)
+						// Questionable default: for code blocks unnecessarily bookended with `
 						let trimmed = content.trim();
 						if(trimmed.startsWith("`") && trimmed.endsWith("`")) {
 							content = trimmed.slice(1, -1);
@@ -195,16 +195,18 @@ class MarkdownToHtml {
 					}
 
 					try {
-						if(isFromWordPress && language === "markup" && !content.trimStart().startsWith("<") || !this.prettierLanguages[finalLanguage]) {
-							// Mislabeled as "markup" (hi WordPress) or no-parser found for prettier
-							content = entities.decodeHTML(striptags(""+node.outerHTML));
-						} else if (this.prettierLanguages[finalLanguage]) {
+						if(isFromWordPress && language === "markup" && !content.trimStart().startsWith("<")) {
+							// This code block was mislabeled as "markup" (hi WordPress), so we do nothing
+						} else if(this.prettierLanguages[finalLanguage]) {
 							// Attempt to format the code with Prettier
 							let parserName = this.prettierLanguages[finalLanguage][0];
 							content = prettierSync.format(content, { parser: parserName });
+						} else {
+							// preserve \n
+							content = entities.decodeHTML(striptags(""+node.innerHTML));
 						}
 					} catch(e) {
-						console.error(`Error running code formatting on code block from ${filePath}. Returning unformatted code.`, e);
+						console.error(`Error running code formatting on code block from ${filePath}${language ? ` (${language})` : ""}. Returning unformatted code:\n\n${content}`, e);
 					}
 
 					return MarkdownToHtml.outputMarkdownCodeBlock(content, finalLanguage);
