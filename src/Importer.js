@@ -1,10 +1,10 @@
 import path from "node:path";
-import { createRequire } from "node:module";
 import fs from "graceful-fs";
 import yaml from "js-yaml";
 import kleur from "kleur";
 import slugify from '@sindresorhus/slugify';
 import * as entities from "entities";
+import { DateCompare } from "@11ty/eleventy-utils";
 
 import { Logger } from "./Logger.js";
 import { Fetcher } from "./Fetcher.js";
@@ -22,8 +22,7 @@ import { WordPressApi } from "./DataSource/WordPressApi.js";
 import { BlueskyUser } from "./DataSource/BlueskyUser.js";
 import { FediverseUser } from "./DataSource/FediverseUser.js";
 
-const require = createRequire(import.meta.url);
-const pkg = require("../package.json");
+import pkg from "../package.json" with { type: "json" };
 
 // For testing
 const MAX_IMPORT_SIZE = 0;
@@ -305,6 +304,26 @@ class Importer {
 			}
 		}
 
+		// If dateUpdated or date within the options.within option time frame, keeps it
+		// Otherwise, filtered out
+		if(options.within) {
+			entries = entries.filter(entry => {
+				if(entry.dateUpdated) {
+					if(DateCompare.isTimestampWithinDuration(entry.dateUpdated.getTime(), options.within)) {
+						return true;
+					}
+				}
+
+				if(entry.date) {
+					if(DateCompare.isTimestampWithinDuration(entry.dateUpdated.getTime(), options.within)) {
+						return true;
+					}
+				}
+				return false;
+			})
+		}
+
+		// purely for internals testing
 		if(MAX_IMPORT_SIZE) {
 			entries = entries.slice(0, MAX_IMPORT_SIZE);
 		}

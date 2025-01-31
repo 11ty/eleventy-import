@@ -41,6 +41,10 @@ npx @11ty/import [type] [target] --overwrite
 # Change local fetch cache duration (default: 24h)
 npx @11ty/import [type] [target] --cacheduration=20m
 
+# Only import entries created (or updated) within a duration (default: *)
+# Same syntax as --cacheduration
+npx @11ty/import [type] [target] --within=7d
+
 # Change output format (default: markdown)
 npx @11ty/import [type] [target] --format=html
 
@@ -138,6 +142,7 @@ importer.addSource("bluesky", "@11ty.dev");
 
 let entries = await importer.getEntries({
 	contentType: "markdown", // --format
+	within: "*", // date or last updated date must be within this recent duration (e.g. 24h, 7d, 1y)
 });
 
 await importer.toFiles(entries);

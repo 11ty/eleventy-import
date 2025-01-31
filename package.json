@@ -35,6 +35,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"@11ty/eleventy-fetch": "^5.0.1",
+		"@11ty/eleventy-utils": "^2.0.1",
 		"@11ty/posthtml-urls": "^1.0.0",
 		"@prettier/sync": "^0.5.2",
 		"@sindresorhus/slugify": "^2.2.1",

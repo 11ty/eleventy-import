@@ -6,6 +6,8 @@ import { Importer } from "./src/Importer.js";
 import { Logger } from "./src/Logger.js";
 import { createRequire } from "node:module";
 
+// "string" or "boolean" types are supported by parseArgs
+// https://nodejs.org/docs/latest/api/util.html#utilparseargsconfig
 let { positionals, values } = parseArgs({
 	allowPositionals: true,
 	strict: true,
@@ -57,11 +59,15 @@ let { positionals, values } = parseArgs({
 			type: "string",
 			default: "relative",
 		},
+		within: {
+			type: "string",
+			default: "",
+		},
 	},
 });
 
 let [ type, target ] = positionals;
-let { quiet, dryrun, output, help, version, overwrite, cacheduration, format, persist, assetrefs } = values;
+let { quiet, dryrun, output, help, version, overwrite, cacheduration, format, persist, assetrefs, within } = values;
 
 if(version) {
 	const require = createRequire(import.meta.url);
@@ -137,6 +143,7 @@ if(persist) {
 
 let entries = await importer.getEntries({
 	contentType: format,
+	within,
 });
 
 await importer.toFiles(entries);
