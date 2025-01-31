@@ -63,11 +63,15 @@ let { positionals, values } = parseArgs({
 			type: "string",
 			default: "",
 		},
+		preserve: {
+			type: "string",
+			default: "",
+		}
 	},
 });
 
 let [ type, target ] = positionals;
-let { quiet, dryrun, output, help, version, overwrite, cacheduration, format, persist, assetrefs, within } = values;
+let { quiet, dryrun, output, help, version, overwrite, cacheduration, format, persist, assetrefs, within, preserve } = values;
 
 if(version) {
 	const require = createRequire(import.meta.url);
@@ -136,6 +140,10 @@ importer.addSource(type, target);
 importer.setDraftsFolder("drafts");
 importer.setAssetsFolder("assets");
 importer.setAssetReferenceType(assetrefs);
+
+if(preserve) {
+	importer.addPreserved(preserve);
+}
 
 if(persist) {
 	importer.setPersistTarget(persist);

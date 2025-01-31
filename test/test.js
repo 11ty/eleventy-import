@@ -101,6 +101,8 @@ test("WordPress import", async (t) => {
 	importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/categories/1", require("./sources/blog-awesome-categories.json"));
 	importer.addDataOverride("wordpress", "https://blog.fontawesome.com/wp-json/wp/v2/users/155431370", require("./sources/blog-awesome-author.json"));
 
+	importer.addPreserved(".c-button--primary");
+
 	let entries = await importer.getEntries({ contentType: "markdown" });
 	assert.equal(entries.length, 1);
 
@@ -143,9 +145,9 @@ Font Awesome 6 makes it even easier to use icons where you want to. More plugins
 
 We’ll keep fine-tuning that sweet, sweet recipe until February. Believe us; the web’s going to have a new scrumpdillyicious secret ingredient!
 
-[Check Out the Beta!](https://fontawesome.com/v6.0)`);
+<a href="https://fontawesome.com/v6.0" class="c-button c-button--primary"><i class="fas fa-arrow-right c-button__icon"></i>Check Out the Beta!</a>`);
 
-	assert.equal(post.content.length, 1304);
+	assert.equal(post.content.length, 1399);
 	assert.equal(post.authors[0].name, "Matt Johnson");
 });
 

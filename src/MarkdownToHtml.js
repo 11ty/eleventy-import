@@ -16,6 +16,34 @@ const WORDPRESS_TO_PRISM_LANGUAGE_TRANSLATION = {
 	markup: "html",
 };
 
+const TAGS_TO_KEEP = [
+	"abbr",
+	"address",
+	"audio",
+	"cite",
+	"dd",
+	"del",
+	"details",
+	// "dialog",
+	"dfn",
+	// "figure",
+	"form",
+	"iframe",
+	"ins",
+	"kbd",
+	"object",
+	"q",
+	"sub",
+	"s",
+	"samp",
+	"svg",
+	"table",
+	"time",
+	"var",
+	"video",
+	"wbr",
+];
+
 class MarkdownToHtml {
 	#prettierLanguages;
 	#initStarted;
@@ -23,10 +51,18 @@ class MarkdownToHtml {
 	constructor() {
 		this.assetsToKeep = new Set();
 		this.assetsToDelete = new Set();
+		this.preservedSelectors = new Set();
 		this.isVerbose = true;
 		this.counts = {
 			cleaned: 0
 		}
+	}
+
+	addPreservedSelector(selector) {
+		if(!selector.startsWith(".")) {
+			throw new Error("Invalid preserved selector. Only class names are supported.");
+		}
+		this.preservedSelectors.add(selector);
 	}
 
 	async asyncInit() {
@@ -118,6 +154,42 @@ class MarkdownToHtml {
 		return `\`\`\`${language || ""}\n${content.trim()}\n\`\`\`\n\n`
 	}
 
+	// Supports .className selectors
+	static hasClass(node, className) {
+		if(className.startsWith(".")) {
+			className = className.slice(1);
+		}
+		return this.hasAttribute(node, "class", className);
+	}
+
+	static matchAttributeEntry(value, expected) {
+		// https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#attrvalue_3
+		if(expected.startsWith("|=")) {
+			let actual = expected.slice(2);
+			// |= is equal to or starts with (and a hyphen)
+			return value === actual || value.startsWith(`${actual}-`);
+		}
+
+		return value === expected;
+	}
+
+	static hasAttribute(node, attrName, attrValueMatch) {
+		if(node._attrKeys?.includes(`|${attrName}`)) {
+			let attrValue = node._attrsByQName?.[attrName]?.data;
+			// [class] is special, space separated values
+			if(attrName === "class") {
+				return attrValue.split(" ").find(entry => {
+					return this.matchAttributeEntry(entry, attrValueMatch);
+				});
+			}
+
+			// not [class]
+			return attrValue === attrValueMatch;
+		}
+
+		return false;
+	}
+
 	getTurndownService(options = {}) {
 		let { filePath, type } = options;
 		let isFromWordPress = type === WordPressApi.TYPE || type === HostedWordPressApi.TYPE;
@@ -127,37 +199,35 @@ class MarkdownToHtml {
 			bulletListMarker: "-",
 			codeBlockStyle: "fenced",
 
+			// Workaround to keep icon elements
+			blankReplacement(content, node) {
+				if(node.localName === "i") {
+					if(MarkdownToHtml.hasClass(node, "|=fa")) {
+						return node.outerHTML;
+					}
+				}
+
+				// content will be empty unless it has a preserved child, e.g. <p><i class="fa-"></i></p>
+				return node.isBlock ? `\n\n${content}\n\n` : content;
+			},
+
 			// Intentionally opt-out
 			// preformattedCode: true,
 		});
 
-		ts.keep([
-			"abbr",
-			"address",
-			"audio",
-			"cite",
-			"dd",
-			"del",
-			"details",
-			// "dialog",
-			"dfn",
-			// "figure",
-			"form",
-			"iframe",
-			"ins",
-			"kbd",
-			"object",
-			"q",
-			"sub",
-			"s",
-			"samp",
-			"svg",
-			"table",
-			"time",
-			"var",
-			"video",
-			"wbr",
-		]);
+		ts.keep(TAGS_TO_KEEP); // tags run through `keepReplacement` function if match
+
+		if(this.preservedSelectors) {
+			let preserved = Array.from(this.preservedSelectors);
+			ts.addRule("keep-via-classes", {
+				filter: function(node) {
+					return preserved.find(cls => MarkdownToHtml.hasClass(node, cls));
+				},
+				replacement: (content, node) => {
+					return node.outerHTML;
+				}
+			});
+		}
 
 		ts.addRule("pre-without-code-to-fenced-codeblock", {
 			filter: ["pre"],

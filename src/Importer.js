@@ -54,6 +54,12 @@ class Importer {
 		this.fetcher.setPersistManager(this.persistManager);
 	}
 
+	addPreserved(selectors) {
+		for(let sel of (selectors || "").split(",")) {
+			this.markdownService.addPreservedSelector(sel);
+		}
+	}
+
 	getCounts() {
 		return {
 			...this.counts,
