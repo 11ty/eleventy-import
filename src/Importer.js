@@ -321,7 +321,7 @@ class Importer {
 				}
 
 				if(entry.date) {
-					if(DateCompare.isTimestampWithinDuration(entry.dateUpdated.getTime(), options.within)) {
+					if(DateCompare.isTimestampWithinDuration(entry.date.getTime(), options.within)) {
 						return true;
 					}
 				}
