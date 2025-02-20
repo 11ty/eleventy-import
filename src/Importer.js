@@ -433,11 +433,7 @@ class Importer {
 
 		// Eleventy specific options
 		if(entry.status === "draft") {
-			// Don’t write to file system in Eleventy
-			data.permalink = false;
 			data.draft = true;
-
-			// TODO map metadata.categories and/or metadata.tags to Eleventy `tags`
 		}
 
 		if(entry.tags) {
