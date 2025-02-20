@@ -38,6 +38,7 @@ class Importer {
 		this.isVerbose = true;
 		this.dryRun = false;
 		this.safeMode = true;
+		this.allowDraftsToOverwrite = false;
 		this.counts = {
 			files: 0
 		};
@@ -54,6 +55,7 @@ class Importer {
 		this.fetcher.setPersistManager(this.persistManager);
 	}
 
+	// CSS selectors to preserve on markdown conversion
 	addPreserved(selectors) {
 		for(let sel of (selectors || "").split(",")) {
 			this.markdownService.addPreservedSelector(sel);
@@ -66,6 +68,14 @@ class Importer {
 			...this.fetcher.getCounts(),
 			...this.markdownService.getCounts(),
 			...this.persistManager.getCounts()
+		}
+	}
+
+	// --overwrite--allow (independent of and bypasses --overwrite)
+	setOverwriteAllow(overwrite = "") {
+		let s = overwrite.split(",");
+		if(s.includes("drafts")) {
+			this.allowDraftsToOverwrite = true;
 		}
 	}
 
@@ -477,10 +487,13 @@ ${entry.content}`;
 			// File system operations
 			// TODO use https://www.npmjs.com/package/diff to compare file contents and skip
 			if(this.safeMode && fs.existsSync(pathname)) {
-				if(this.isVerbose) {
-					Logger.skipping("post", pathname, entry.url);
+				// Not a draft or drafts are skipped (via --overwrite-allow)
+				if(entry.status !== "draft" || !this.allowDraftsToOverwrite) {
+					if(this.isVerbose) {
+						Logger.skipping("post", pathname, entry.url);
+					}
+					continue;
 				}
-				continue;
 			}
 
 			if(this.isVerbose) {

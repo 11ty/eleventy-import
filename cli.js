@@ -43,6 +43,10 @@ let { positionals, values } = parseArgs({
 			type: "boolean",
 			default: false,
 		},
+		"overwrite-allow": {
+			type: "string",
+			default: "",
+		},
 		cacheduration: {
 			type: "string",
 			default: "24h",
@@ -102,6 +106,9 @@ if(help) {
   # Allow overwriting existing files
   npx @11ty/import [type] [target] --overwrite
 
+	# Allow draft entries to overwrite existing files
+  npx @11ty/import [type] [target] --overwrite-allow=drafts
+
   # Change local fetch cache duration (default: 24h)
   npx @11ty/import [type] [target] --cacheduration=20m
 
@@ -141,6 +148,7 @@ importer.setDraftsFolder("drafts");
 importer.setAssetsFolder("assets");
 importer.setAssetReferenceType(assetrefs);
 
+// CSS selectors to preserve on markdown conversion
 if(preserve) {
 	importer.addPreserved(preserve);
 }
@@ -148,6 +156,8 @@ if(preserve) {
 if(persist) {
 	importer.setPersistTarget(persist);
 }
+
+importer.setOverwriteAllow(values['overwrite-allow']);
 
 let entries = await importer.getEntries({
 	contentType: format,
