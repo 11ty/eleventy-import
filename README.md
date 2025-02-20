@@ -38,6 +38,9 @@ npx @11ty/import [type] [target] --output=dist
 # Allow overwriting existing files
 npx @11ty/import [type] [target] --overwrite
 
+# Allow draft entries to overwrite existing files (bypasses --overwrite)
+npx @11ty/import [type] [target] --overwrite-allow=drafts
+
 # Change local fetch cache duration (default: 24h)
 npx @11ty/import [type] [target] --cacheduration=20m
 
@@ -139,6 +142,12 @@ importer.setAssetReferenceType("relative"); // --assetrefs
 
 // Sources (one or more)
 importer.addSource("bluesky", "@11ty.dev");
+
+// Simple CSS selector (class names only) for preserved elements in Markdown conversion
+importer.addPreserved(".save-this-class-name");
+
+// Allow draft entries to overwrite (independent of Safe Mode value)
+importer.setOverwriteAllow("drafts");
 
 let entries = await importer.getEntries({
 	contentType: "markdown", // --format

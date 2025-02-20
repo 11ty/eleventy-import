@@ -106,7 +106,7 @@ if(help) {
   # Allow overwriting existing files
   npx @11ty/import [type] [target] --overwrite
 
-	# Allow draft entries to overwrite existing files
+  # Allow draft entries to overwrite existing files (bypasses --overwrite)
   npx @11ty/import [type] [target] --overwrite-allow=drafts
 
   # Change local fetch cache duration (default: 24h)
