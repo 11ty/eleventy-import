@@ -1,4 +1,5 @@
 import "dotenv/config"
+import { DateCompare } from "@11ty/eleventy-utils";
 
 import { DataSource } from "../DataSource.js";
 import { HostedWordPressApi } from "./HostedWordPressApi.js"
@@ -56,6 +57,13 @@ class WordPressApi extends DataSource {
 			// status=publish,future,draft,pending,private
 			// status=any
 
+			let withinStr = "";
+			if(this.within) {
+				let ms = DateCompare.getDurationMs(this.within);
+				let d = this.toIsoDate(new Date(Date.now() - ms));
+				withinStr = `&after=${d}&modified_after=${d}`
+			}
+
 			let statusStr = "";
 			// Only request Drafts if auth’d
 			if(process.env.WORDPRESS_USERNAME && process.env.WORDPRESS_PASSWORD) {
@@ -63,7 +71,7 @@ class WordPressApi extends DataSource {
 				statusStr = `&status=${encodeURIComponent("publish,draft")}`;
 			}
 
-			return this.#getSubtypeUrl("posts", `?page=${pageNumber}&per_page=100${statusStr}`);
+			return this.#getSubtypeUrl("posts", `?page=${pageNumber}&per_page=100${statusStr}${withinStr}`);
 		};
 	}
 
