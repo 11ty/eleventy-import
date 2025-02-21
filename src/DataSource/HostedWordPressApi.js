@@ -63,6 +63,13 @@ class HostedWordPressApi extends DataSource {
 		];
 	}
 
+	getRawEntryDates(rawEntry) {
+		return {
+			created: this.toDateObj(rawEntry.date),
+			updated: this.toDateObj(rawEntry.modified),
+		};
+	}
+
 	async cleanEntry(rawEntry, data) {
 		let metadata = {
 			categories: Object.keys(rawEntry.categories),
@@ -78,14 +85,16 @@ class HostedWordPressApi extends DataSource {
 			metadata.featuredImage = rawEntry.featured_image;
 		}
 
+		let { created, updated } = this.getRawEntryDates(rawEntry);
+
 		return {
 			uuid: this.getUniqueIdFromEntry(rawEntry),
 			type: HostedWordPressApi.TYPE,
 			title: rawEntry.title,
 			url: this.getUrlFromEntry(rawEntry),
 			authors: this.#getAuthorData(rawEntry.author),
-			date: rawEntry.date,
-			dateUpdated: rawEntry.modified,
+			date: created,
+			dateUpdated: updated,
 			content: rawEntry.content,
 			contentType: "html",
 			status: this.cleanStatus(rawEntry.status),

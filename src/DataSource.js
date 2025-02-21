@@ -1,4 +1,5 @@
 import kleur from 'kleur';
+import { DateCompare } from "@11ty/eleventy-utils";
 
 import { Logger } from "./Logger.js";
 
@@ -11,6 +12,11 @@ class DataSource {
 
 	constructor() {
 		this.isVerbose = true;
+		this.within = "";
+	}
+
+	setWithin(within) {
+		this.within = within;
 	}
 
 	setVerbose(isVerbose) {
@@ -131,15 +137,26 @@ class DataSource {
 
 		let entries = [];
 		for(let rawEntry of dataEntries) {
-			if(typeof this.cleanEntry === "function") {
-				let cleaned = await this.cleanEntry(rawEntry, data);
-				entries.push(cleaned);
-			} else {
-				entries.push(rawEntry);
+			if(this.isWithin(rawEntry)) {
+				if(typeof this.cleanEntry === "function") {
+					let cleaned = await this.cleanEntry(rawEntry, data);
+					entries.push(cleaned);
+				} else {
+					entries.push(rawEntry);
+				}
 			}
 		}
 
 		return entries;
+	}
+
+	toDateObj(dateVal) {
+		if(dateVal instanceof Date) {
+			return dateVal;
+		}
+		if(dateVal) {
+			return new Date(Date.parse(dateVal));
+		}
 	}
 
 	async getEntries() {
@@ -154,8 +171,12 @@ class DataSource {
 					while(pagedUrl = url(pageNumber)) {
 						let found = 0;
 						let data = await this.getData(pagedUrl, this.getType(), false);
-						for(let entry of await this.getCleanedEntries(data)) {
+						let cleanedData = await this.getCleanedEntries(data);
+
+						for(let entry of cleanedData) {
 							entries.push(entry);
+
+							// careful here, if an entry was updated out of your `within` window, it will be ignored
 							found++;
 						}
 
@@ -193,12 +214,12 @@ class DataSource {
 			}
 
 			// create Date objects
-			if(entry.date) {
-				entry.date = new Date(Date.parse(entry.date));
+			if(entry.date && !(entry.date instanceof Date)) {
+				entry.date = this.toDateObj(entry.date);
 			}
 
-			if(entry.dateUpdated) {
-				entry.dateUpdated = new Date(Date.parse(entry.dateUpdated));
+			if(entry.dateUpdated && !(entry.dateUpdated instanceof Date)) {
+				entry.dateUpdated = this.toDateObj(entry.date);
 			}
 
 			Object.defineProperty(entry, "source", {
@@ -214,6 +235,28 @@ class DataSource {
 		// WordPress has draft/publish
 		// For future use
 		return status;
+	}
+
+	isWithin(rawEntry) {
+		if(!this.within || typeof this.getRawEntryDates !== "function") {
+			return true;
+		}
+
+		let dates = this.getRawEntryDates(rawEntry);
+
+		if(dates.created) {
+			if(DateCompare.isTimestampWithinDuration(dates.created.getTime(), this.within)) {
+				return true;
+			}
+		}
+
+		if(dates.updated) {
+			if(DateCompare.isTimestampWithinDuration(dates.updated.getTime(), this.within)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 

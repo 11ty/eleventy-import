@@ -44,26 +44,35 @@ class Atom extends DataSource {
 		return `${DataSource.UUID_PREFIX}::${Atom.TYPE}::${entry.id}`;
 	}
 
-	cleanEntry(entry, data) {
+	getRawEntryDates(rawEntry) {
+		return {
+			created: this.toDateObj(rawEntry.published || rawEntry.updated),
+			updated: this.toDateObj(rawEntry.updated)
+		};
+	}
+
+	cleanEntry(rawEntry, data) {
 		let authors = [];
-		if(Array.isArray(entry?.author)) {
-			authors = entry.author.map(author => ({ name: author }));
+		if(Array.isArray(rawEntry?.author)) {
+			authors = rawEntry.author.map(author => ({ name: author }));
 		} else {
 			authors.push({
-				name: entry?.author?.name || data.feed?.author?.name,
+				name: rawEntry?.author?.name || data.feed?.author?.name,
 			});
 		}
 
+		let { created, updated } = this.getRawEntryDates(rawEntry);
+
 		return {
-			uuid: this.getUniqueIdFromEntry(entry),
+			uuid: this.getUniqueIdFromEntry(rawEntry),
 			type: Atom.TYPE,
-			title: entry.title,
-			url: this.getUrlFromEntry(entry),
+			title: rawEntry.title,
+			url: this.getUrlFromEntry(rawEntry),
 			authors,
-			date: entry.published || entry.updated,
-			dateUpdated: entry.updated,
-			content: entry.content["#text"],
-			contentType: entry.content["@_type"],
+			date: created,
+			dateUpdated: updated,
+			content: rawEntry.content["#text"],
+			contentType: rawEntry.content["@_type"],
 		}
 	}
 }

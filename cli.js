@@ -162,6 +162,8 @@ importer.setOverwriteAllow(values['overwrite-allow']);
 let entries = await importer.getEntries({
 	contentType: format,
 	within,
+	// Pperformance improvement to avoids parsing html and fetching assets for documents outside of --within (and overwrite rules)
+	target: "fs",
 });
 
 await importer.toFiles(entries);

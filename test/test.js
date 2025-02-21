@@ -283,3 +283,69 @@ test("Markdown cleanup code blocks with nested <code>", async (t) => {
 
 	assert.equal(content2.trim(), "```\nAuthorization: Bearer DEAD-BEEF\n```");
 });
+
+test("within yes", async (t) => {
+	let importer = new Importer();
+
+	importer.setVerbose(false);
+	importer.setDryRun(true);
+
+	class MySource extends DataSource {
+		static TYPE = "arbitrary";
+		static TYPE_FRIENDLY = "Arbitrary";
+
+		getRawEntryDates(rawEntry) {
+			return {
+				created: rawEntry.date,
+			}
+		}
+
+		getData() {
+			return [{
+				lol: "hi",
+				url: "https://example.com/test/",
+				date: new Date(),
+			}];
+		}
+	}
+
+	importer.addSource(MySource);
+
+	let entries = await importer.getEntries({
+		within: "1m"
+	});
+	assert.equal(entries.length, 1);
+});
+
+test("within no", async (t) => {
+	let importer = new Importer();
+
+	importer.setVerbose(false);
+	importer.setDryRun(true);
+
+	class MySource extends DataSource {
+		static TYPE = "arbitrary";
+		static TYPE_FRIENDLY = "Arbitrary";
+
+		getRawEntryDates(rawEntry) {
+			return {
+				created: rawEntry.date,
+			}
+		}
+
+		getData() {
+			return [{
+				lol: "hi",
+				url: "https://example.com/test/",
+				date: new Date(2010, 0,1),
+			}];
+		}
+	}
+
+	importer.addSource(MySource);
+
+	let entries = await importer.getEntries({
+		within: "1m"
+	});
+	assert.equal(entries.length, 0);
+});

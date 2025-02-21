@@ -30,22 +30,31 @@ class YouTubeUser extends DataSource {
 		return searchParams.get("v");
 	}
 
-	cleanEntry(entry) {
+	getRawEntryDates(rawEntry) {
 		return {
-			uuid: this.getUniqueIdFromEntry(entry),
+			created: this.toDateObj(rawEntry.published),
+			updated: this.toDateObj(rawEntry.updated),
+		};
+	}
+
+	cleanEntry(rawEntry) {
+		let { created, updated } = this.getRawEntryDates(rawEntry);
+
+		return {
+			uuid: this.getUniqueIdFromEntry(rawEntry),
 			type: YouTubeUser.TYPE,
-			title: entry.title,
-			url: `https://www.youtube.com/watch?v=${entry['yt:videoId']}`,
+			title: rawEntry.title,
+			url: `https://www.youtube.com/watch?v=${rawEntry['yt:videoId']}`,
 			authors: [
 				{
-					name: entry.author.name,
-					url: entry.author.uri,
+					name: rawEntry.author.name,
+					url: rawEntry.author.uri,
 				}
 			],
-			date: entry.published,
-			dateUpdated: entry.updated,
+			date: created,
+			dateUpdated: updated,
 			// TODO linkify, nl2br
-			content: entry['media:group']['media:description'],
+			content: rawEntry['media:group']['media:description'],
 			contentType: "text",
 		}
 	}

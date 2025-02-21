@@ -136,6 +136,13 @@ class WordPressApi extends DataSource {
 		});
 	}
 
+	getRawEntryDates(rawEntry) {
+		return {
+			created: this.toDateObj(rawEntry.date_gmt),
+			updated: this.toDateObj(rawEntry.modified_gmt),
+		};
+	}
+
 	// Supports: Title, Author, Published/Updated Dates
 	async cleanEntry(rawEntry, data) {
 		let url = this.getUrlFromEntry(rawEntry);
@@ -166,14 +173,16 @@ class WordPressApi extends DataSource {
 			metadata.tags = tags;
 		}
 
+		let { created, updated } = this.getRawEntryDates(rawEntry);
+
 		let cleanEntry = {
 			uuid: this.getUniqueIdFromEntry(rawEntry),
 			type: WordPressApi.TYPE,
 			title: rawEntry.title?.rendered,
 			url,
 			authors: await this.#getAuthors(rawEntry.author),
-			date: rawEntry.date_gmt,
-			dateUpdated: rawEntry.modified_gmt,
+			date: created,
+			dateUpdated: updated,
 			content: rawEntry.content.rendered,
 			contentType: "html",
 			status,

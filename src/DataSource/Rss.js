@@ -57,15 +57,22 @@ class Rss extends DataSource {
 		}).join("\n");
 	}
 
-	cleanEntry(entry, data) {
+	getRawEntryDates(rawEntry) {
+		return {
+			created: this.toDateObj(this.toIsoDate(rawEntry.pubDate)),
+			// updated: this.toDateObj(rawEntry.updated),
+		};
+	}
+
+	cleanEntry(rawEntry, data) {
 		let authors = [];
 		// https://www.rssboard.org/rss-profile#namespace-elements-dublin-creator
-		if(Array.isArray(entry['dc:creator'])) {
-			for(let name of entry['dc:creator']) {
+		if(Array.isArray(rawEntry['dc:creator'])) {
+			for(let name of rawEntry['dc:creator']) {
 				authors.push({ name });
 			}
-		} else if(entry['dc:creator']) {
-			authors.push({ name: entry['dc:creator'] });
+		} else if(rawEntry['dc:creator']) {
+			authors.push({ name: rawEntry['dc:creator'] });
 		} else {
 			authors.push({
 				name: data.rss.channel.title,
@@ -73,20 +80,22 @@ class Rss extends DataSource {
 			});
 		}
 
-		let content = entry["content:encoded"] || entry.content || entry.description;
+		let content = rawEntry["content:encoded"] || rawEntry.content || rawEntry.description;
 
-		if(entry["media:content"]) {
-			content += `\n${this.getHtmlFromMediaEntry(entry["media:content"])}`;
+		if(rawEntry["media:content"]) {
+			content += `\n${this.getHtmlFromMediaEntry(rawEntry["media:content"])}`;
 		}
 
+		let { created } = this.getRawEntryDates(rawEntry);
+
 		return {
-			uuid: this.getUniqueIdFromEntry(entry),
+			uuid: this.getUniqueIdFromEntry(rawEntry),
 			type: Rss.TYPE,
-			title: entry.title || this.toReadableDate(entry.pubDate),
-			url: entry.link,
+			title: rawEntry.title || this.toReadableDate(rawEntry.pubDate),
+			url: rawEntry.link,
 			authors,
-			date: this.toIsoDate(entry.pubDate),
-			// dateUpdated: entry.updated,
+			date: created,
+			// dateUpdated: rawEntry.updated,
 			content,
 			// contentType: "", // unknown
 		}

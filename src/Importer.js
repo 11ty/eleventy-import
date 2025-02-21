@@ -4,7 +4,6 @@ import yaml from "js-yaml";
 import kleur from "kleur";
 import slugify from '@sindresorhus/slugify';
 import * as entities from "entities";
-import { DateCompare } from "@11ty/eleventy-utils";
 
 import { Logger } from "./Logger.js";
 import { Fetcher } from "./Fetcher.js";
@@ -303,8 +302,31 @@ class Importer {
 		return content;
 	}
 
+
+	// Is used to filter getEntries and in toFiles (which also checks conflicts)
+	shouldSkipEntry(entry) {
+		if(entry.filePath === false) {
+			return true;
+		}
+
+		// File system operations
+		// TODO use https://www.npmjs.com/package/diff to compare file contents and skip
+		if(this.safeMode && fs.existsSync(entry.filePath)) {
+			// Not a draft or drafts are skipped (via --overwrite-allow)
+			if(entry.status !== "draft" || !this.allowDraftsToOverwrite) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	async getEntries(options = {}) {
 		let isWritingToMarkdown = options.contentType === "markdown";
+
+		for(let source of this.sources) {
+			source.setWithin(options.within);
+		}
 
 		let entries = [];
 		for(let source of this.sources) {
@@ -316,27 +338,13 @@ class Importer {
 
 				entry.filePath = this.getFilePath(entry, contentType);
 
-				entries.push(entry);
+				// to prevent fetching assets and transforming contents on entries that won’t get written
+				if(options.target === "fs" && this.shouldSkipEntry(entry)) {
+					// do nothing
+				} else {
+					entries.push(entry);
+				}
 			}
-		}
-
-		// If dateUpdated or date within the options.within option time frame, keeps it
-		// Otherwise, filtered out
-		if(options.within) {
-			entries = entries.filter(entry => {
-				if(entry.dateUpdated) {
-					if(DateCompare.isTimestampWithinDuration(entry.dateUpdated.getTime(), options.within)) {
-						return true;
-					}
-				}
-
-				if(entry.date) {
-					if(DateCompare.isTimestampWithinDuration(entry.date.getTime(), options.within)) {
-						return true;
-					}
-				}
-				return false;
-			})
 		}
 
 		// purely for internals testing
@@ -484,16 +492,11 @@ class Importer {
 ${frontMatter}---
 ${entry.content}`;
 
-			// File system operations
-			// TODO use https://www.npmjs.com/package/diff to compare file contents and skip
-			if(this.safeMode && fs.existsSync(pathname)) {
-				// Not a draft or drafts are skipped (via --overwrite-allow)
-				if(entry.status !== "draft" || !this.allowDraftsToOverwrite) {
-					if(this.isVerbose) {
-						Logger.skipping("post", pathname, entry.url);
-					}
-					continue;
+			if(this.shouldSkipEntry(entry)) {
+				if(this.isVerbose) {
+					Logger.skipping("post", pathname, entry.url);
 				}
+				continue;
 			}
 
 			if(this.isVerbose) {
