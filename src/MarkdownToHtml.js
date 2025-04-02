@@ -207,6 +207,15 @@ class MarkdownToHtml {
 					}
 				}
 
+				if(node.localName === "svg") {
+					let iconName = node._attrsByQName?.["data-icon"]?.data;
+					let iconPrefix = node._attrsByQName?.["data-prefix"]?.data;
+
+					if(MarkdownToHtml.hasClass(node, "svg-inline--fa") && iconName && iconPrefix) {
+						return `<i class="${iconPrefix} fa-${iconName}"></i>`
+					}
+				}
+
 				// content will be empty unless it has a preserved child, e.g. <p><i class="fa-"></i></p>
 				return node.isBlock ? `\n\n${content}\n\n` : content;
 			},
@@ -217,7 +226,7 @@ class MarkdownToHtml {
 
 		ts.keep(TAGS_TO_KEEP); // tags run through `keepReplacement` function if match
 
-		if(this.preservedSelectors) {
+		if(this.preservedSelectors.size > 0) {
 			let preserved = Array.from(this.preservedSelectors);
 			ts.addRule("keep-via-classes", {
 				filter: function(node) {
