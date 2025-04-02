@@ -87,6 +87,7 @@ test("WordPress import", async (t) => {
 
 	importer.setVerbose(false);
 	importer.setDryRun(true);
+	importer.setAssetReferenceType("disabled");
 
 	importer.addSource("wordpress", "https://blog.fontawesome.com/");
 
@@ -111,7 +112,7 @@ test("WordPress import", async (t) => {
 
 	assert.equal(cleanContent(post.content), `We’re so close to launching version 6, and we figured it was high time to make an official announcement. So, save the date for February. Font Awesome 6 will go beyond pure icon-imagination!
 
-![](assets/image-calendar-exclamation-2-fgQFmKKbUClc.png)
+![](https://i0.wp.com/blog.fontawesome.com/wp-content/uploads/2021/12/image-calendar-exclamation-2.png?w=1440&ssl=1)
 
 Save the date! February 2022 is just around the corner!
 
@@ -123,7 +124,7 @@ So, what’s new?
 
 Font Awesome 6 contains over 7,000 new icons, so you’re sure to find what you need for your project. Plus, we’ve redesigned most of our icons from scratch, so they’re more consistent and easier to use.
 
-![](assets/image-icons-2-QjKY2bnBAg1T.png)
+![](https://i0.wp.com/blog.fontawesome.com/wp-content/uploads/2021/12/image-icons-2.png?w=1440&ssl=1)
 
 * * *
 
@@ -131,7 +132,7 @@ Font Awesome 6 contains over 7,000 new icons, so you’re sure to find what you 
 
 Font Awesome 6 includes five icons styles: solid, regular, light, duotone, and the new THIN style — not to mention all of our brand icons. And coming later in 2022 is the entirely new SHARP family of styles.
 
-![](assets/image-styles-2-L9iIR9SlzG26.png)
+![](https://i0.wp.com/blog.fontawesome.com/wp-content/uploads/2021/12/image-styles-2.png?w=1440&ssl=1)
 
 * * *
 
@@ -139,7 +140,7 @@ Font Awesome 6 includes five icons styles: solid, regular, light, duotone, and t
 
 Font Awesome 6 makes it even easier to use icons where you want to. More plugins and packages to match your stack. Less time wrestling browser rendering.
 
-![](assets/image-awesome-2-O2xta1tL8p5n.png)
+![](https://i0.wp.com/blog.fontawesome.com/wp-content/uploads/2021/12/image-awesome-2.png?w=720&ssl=1)
 
 * * *
 
@@ -147,7 +148,7 @@ We’ll keep fine-tuning that sweet, sweet recipe until February. Believe us; th
 
 <a href="https://fontawesome.com/v6.0" class="c-button c-button--primary"><i class="fas fa-arrow-right c-button__icon"></i>Check Out the Beta!</a>`);
 
-	assert.equal(post.content.length, 1399);
+	assert.equal(post.content.length, 1634);
 	assert.equal(post.authors[0].name, "Matt Johnson");
 });
 
