@@ -53,7 +53,7 @@ class Rss extends DataSource {
 			// Only supporting images for now
 			return !source["@_medium"] || source["@_medium"] === "image";
 		}).map(source => {
-			return `<img src="${source["@_url"]}" alt="${source["media:description"]["#text"]}">`;
+			return `<img src="${source["@_url"]}" alt="${source["media:description"]?.["#text"] || ""}">`;
 		}).join("\n");
 	}
 
