@@ -330,7 +330,9 @@ class MarkdownToHtml {
 						this.assetsToDelete.add(this.recontextifyRelativeAssetPath(asset, filePath));
 					}
 
-					return `![${node.getAttribute("alt") || ""}](${src})`;
+					// New lines are stripped by markdown-it anyway when encoding back to HTML
+					let altString = (node.getAttribute("alt") || "").replace(/\n+/gi, " ");
+					return `![${entities.escapeAttribute(altString)}](${src})`;
 				} catch(e) {
 					// Otherwise errors get swallowed without feedback by Turndown
 					console.error(`Error processing high-resolution images on ${filePath}`, e);
