@@ -1,4 +1,4 @@
-import fs from "graceful-fs";
+import fs from "node:fs";
 import { createHash } from "node:crypto";
 import kleur from "kleur";
 import { XMLParser } from "fast-xml-parser";
