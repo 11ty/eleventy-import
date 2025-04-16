@@ -1,4 +1,4 @@
-import fs from "graceful-fs";
+import fs from "node:fs";
 
 class DirectoryManager {
 	static getDirectory(pathname) {

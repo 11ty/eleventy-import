@@ -1,5 +1,5 @@
 import path from "node:path";
-import fs from "graceful-fs";
+import fs from "node:fs";
 import TurndownService from "turndown";
 import * as prettier from "prettier";
 import prettierSync from "@prettier/sync";
