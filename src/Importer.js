@@ -1,5 +1,5 @@
 import path from "node:path";
-import fs from "graceful-fs";
+import fs from "node:fs";
 import yaml from "js-yaml";
 import kleur from "kleur";
 import slugify from '@sindresorhus/slugify';
