@@ -170,3 +170,5 @@ await importer.toFiles(entries);
 
 importer.logResults();
 
+importer.generateScaffolding();
+

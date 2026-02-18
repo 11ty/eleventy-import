@@ -16,6 +16,14 @@ class HtmlTransformer {
 					return this.#fetcher.fetchAsset(rawUrl, entry);
 				}
 
+				// Download podcast MP3 files from <a> tags
+				if(tagName === "a" && attr === "href") {
+					// Check if URL points to an audio file
+					if(rawUrl.match(/\.(mp3|m4a|ogg|wav|flac)(\?.*)?$/i)) {
+						return this.#fetcher.fetchAsset(rawUrl, entry);
+					}
+				}
+
 				return rawUrl;
 			}
 		};

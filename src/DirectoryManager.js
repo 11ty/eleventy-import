@@ -1,10 +1,15 @@
 import fs from "graceful-fs";
+import path from "node:path";
 
 class DirectoryManager {
 	static getDirectory(pathname) {
-		let dirs = pathname.split("/");
-		dirs.pop();
-		return dirs.join("/");
+		let dir = path.dirname(pathname);
+		// Return empty string for root directory to maintain backward compatibility
+		// (original code returned "" for "/test.html", not "/")
+		if (dir === "/" || dir === "\\") {
+			return "";
+		}
+		return dir;
 	}
 
 	constructor() {

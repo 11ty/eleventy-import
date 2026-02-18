@@ -302,6 +302,36 @@ class Importer {
 		return content;
 	}
 
+	async processMarkdownAudioLinks(content, entry) {
+		if(!content || !this.shouldDownloadAssets()) {
+			return content;
+		}
+
+		// Match markdown links to audio files: [text](url.mp3) or [text](url.mp3 "title")
+		// Captures: [1] = link text, [2] = URL only, [3] = file extension, [4] = optional title with quotes
+		const audioLinkPattern = /\[([^\]]+)\]\((https?:\/\/[^\s\)]+\.(mp3|m4a|ogg|wav|flac)(?:\?[^\s\)"]*)?)\s*("[^"]*")?\)/gi;
+
+		const matches = [...content.matchAll(audioLinkPattern)];
+
+		for(const match of matches) {
+			const [fullMatch, linkText, audioUrl, , title] = match;
+			try {
+				const localUrl = await this.fetcher.fetchAsset(audioUrl, entry);
+				// Replace the URL in the markdown link with the local path, preserving title if present
+				const replacement = title
+					? `[${linkText}](${localUrl} ${title})`
+					: `[${linkText}](${localUrl})`;
+				content = content.replace(fullMatch, replacement);
+			} catch(error) {
+				// If download fails, keep the original URL
+				if(this.isVerbose) {
+					console.error(`Failed to download audio: ${audioUrl}`, error.message);
+				}
+			}
+		}
+
+		return content;
+	}
 
 	// Is used to filter getEntries and in toFiles (which also checks conflicts)
 	shouldSkipEntry(entry) {
@@ -356,6 +386,9 @@ class Importer {
 			await this.fetchRelatedMedia(entry);
 
 			entry.content = await this.getTransformedContent(entry, isWritingToMarkdown);
+
+			// Process markdown links to audio files (podcast MP3s, etc.)
+			entry.content = await this.processMarkdownAudioLinks(entry.content, entry);
 
 			if(isWritingToMarkdown && Importer.shouldConvertToMarkdown(entry)) {
 				entry.contentType = "markdown";
@@ -426,22 +459,34 @@ class Importer {
 		let pathname = path.join(".", ...subdirs, path.normalize(fallbackPath));
 		let extension = contentType === "markdown" ? ".md" : ".html";
 
-		if(pathname.endsWith("/")) {
+		// Check for trailing path separator (cross-platform: / or \)
+		if(pathname.endsWith("/") || pathname.endsWith(path.sep)) {
 			if(this.isAssetsColocated()) {
-				return `${pathname}index${extension}`;
+				return path.join(pathname, `index${extension}`);
 			}
 			return `${pathname.slice(0, -1)}${extension}`;
 		}
 
 		if(this.isAssetsColocated()) {
-			return `${pathname}/index${extension}`;
+			return path.join(pathname, `index${extension}`);
 		}
 		return `${pathname}${extension}`;
 	}
 
+	static decodeHtmlEntities(str) {
+		if (!str) return str;
+		const entities = {
+			'&#8217;': "'", '&#8216;': "'", '&#8220;': '"', '&#8221;': '"',
+			'&#8230;': '...', '&#x2122;': '™', '&#038;': '&', '&amp;': '&',
+			'&#8211;': '–', '&#8212;': '—', '&quot;': '"', '&#039;': "'",
+			'&lt;': '<', '&gt;': '>'
+		};
+		return str.replace(/&#?[\w\d]+;/g, match => entities[match] || match);
+	}
+
 	static convertEntryToYaml(entry) {
 		let data = {};
-		data.title = entry.title;
+		data.title = Importer.decodeHtmlEntities(entry.title);
 		data.authors = entry.authors;
 		data.date = entry.date;
 		data.metadata = entry.metadata || {};
@@ -548,6 +593,59 @@ ${entry.content}`;
 		content.push(`(v${pkg.version})`);
 
 		Logger.log(content.join(" "));
+	}
+
+	generateScaffolding() {
+		if(this.dryRun) {
+			return;
+		}
+
+		const packageJsonPath = path.join(".", "package.json");
+		const eleventyConfigPath = path.join(".", ".eleventy.js");
+
+		// Generate package.json if it doesn't exist
+		if(!fs.existsSync(packageJsonPath)) {
+			const packageJson = {
+				name: path.basename(process.cwd()),
+				version: "1.0.0",
+				description: "Eleventy site",
+				scripts: {
+					start: "eleventy --serve",
+					build: "eleventy",
+					clean: "rm -rf _site"
+				},
+				devDependencies: {
+					"@11ty/eleventy": "^3.0.0"
+				}
+			};
+
+			fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n", { encoding: "utf8" });
+			if(this.isVerbose) {
+				Logger.log(kleur.green(`Created ${packageJsonPath}`));
+			}
+		}
+
+		// Generate .eleventy.js if it doesn't exist
+		if(!fs.existsSync(eleventyConfigPath)) {
+			const eleventyConfig = `module.exports = function(eleventyConfig) {
+  // Copy assets to output
+  eleventyConfig.addPassthroughCopy("${this.#outputFolder}/assets");
+  eleventyConfig.addPassthroughCopy("${this.#outputFolder}/**/assets");
+
+  return {
+    dir: {
+      input: "${this.#outputFolder}",
+      output: "_site"
+    }
+  };
+};
+`;
+
+			fs.writeFileSync(eleventyConfigPath, eleventyConfig, { encoding: "utf8" });
+			if(this.isVerbose) {
+				Logger.log(kleur.green(`Created ${eleventyConfigPath}`));
+			}
+		}
 	}
 }
 
