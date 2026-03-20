@@ -38,7 +38,7 @@
 		"@11ty/eleventy-utils": "^2.0.7",
 		"@11ty/posthtml-urls": "^1.0.2",
 		"@prettier/sync": "^0.6.1",
-		"@sindresorhus/slugify": "^2.2.1",
+		"@sindresorhus/slugify": "^3.0.0",
 		"dotenv": "^17.3.1",
 		"entities": "^7.0.1",
 		"fast-xml-parser": "^5.5.8",
