@@ -41,7 +41,7 @@
 		"@sindresorhus/slugify": "^2.2.1",
 		"dotenv": "^16.6.1",
 		"entities": "^5.0.0",
-		"fast-xml-parser": "^4.5.4",
+		"fast-xml-parser": "^5.5.3",
 		"filesize": "^10.1.6",
 		"github-publish": "^6.0.0",
 		"js-yaml": "^4.1.1",
