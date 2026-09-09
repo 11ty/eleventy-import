@@ -40,7 +40,7 @@
 		"@zachleat/turndown": "^7.2.0",
 		"dotenv": "^17.4.2",
 		"entities": "^8.0.0",
-		"fast-xml-parser": "^5.9.3",
+		"fast-xml-parser": "^5.11.1",
 		"filesize": "^11.0.22",
 		"github-publish": "^6.0.0",
 		"js-yaml": "^5.3.0",
